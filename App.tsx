@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
+import Routes from './src/routes';
+import AuthProvider from './src/contexts/AuthContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import GlobalAlertProvider from './src/contexts/GlobalAlertContext';
+import { PaperProvider } from 'react-native-paper';
 export default function App() {
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <GlobalAlertProvider>
+          <AuthProvider>
+            <NavigationContainer>
+              <StatusBar backgroundColor={"#1d1d2e"} barStyle={"light-content"} translucent={false} />
+              <Routes />
+            </NavigationContainer>
+          </AuthProvider>
+        </GlobalAlertProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
