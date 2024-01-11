@@ -7,6 +7,7 @@ type CreateContextData = {
     user: UserProps;
     isAuthenticated: boolean;
     handleAuth: HandleAuthProps;
+    signOut: () => Promise<void>;
 }
 
 type UserProps = {
@@ -90,7 +91,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         hideLoading()
     }
 
-    return (<AuthContext.Provider value={{ isAuthenticated, user, handleAuth }}>
+    async function signOut() {
+        await AsyncStorage.clear()
+            .then(() => {
+                setUser({
+                    email: "",
+                    name: "",
+                })
+            })
+    }
+
+    return (<AuthContext.Provider value={{ isAuthenticated, user, handleAuth, signOut }}>
         {children}
     </AuthContext.Provider>)
 }
