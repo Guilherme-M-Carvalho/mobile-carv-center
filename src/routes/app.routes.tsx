@@ -21,7 +21,7 @@ export default function AppRoutes() {
     return (
         <Tab.Navigator  sceneContainerStyle={{
         }} screenOptions={{
-            tabBarActiveTintColor: "rgb(28, 27, 31)",
+            tabBarActiveTintColor: "#fff",
             headerShown: false,
             tabBarLabelStyle: {
                 fontSize: 14,
@@ -29,6 +29,11 @@ export default function AppRoutes() {
             tabBarIconStyle: {
                 fontSize: 16
             },
+            tabBarStyle: {
+                backgroundColor: "rgb(28, 27, 31)",
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8
+            }
 
         }} initialRouteName="home">
             <Tab.Screen options={{
@@ -46,6 +51,9 @@ export default function AppRoutes() {
 export type StackParamsList = {
     service: undefined
     createService: undefined
+    editarService: {
+        id: number
+    }
 }
 
 const Stack = createNativeStackNavigator<StackParamsList>();
@@ -66,6 +74,9 @@ function ServiceRoutes() {
             <Stack.Screen options={{
                 title: "Criar Serviço",
             }} name="createService" component={CreateService} />
+            <Stack.Screen options={{
+                title: "Editar Serviço",
+            }} name="editarService" component={CreateService} />
         </Stack.Navigator>
     )
 }

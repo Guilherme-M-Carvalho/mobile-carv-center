@@ -1,12 +1,19 @@
-import * as React from 'react';
-import { FAB, Portal, PaperProvider } from 'react-native-paper';
+import { useContext, useState } from 'react';
+import { FAB } from 'react-native-paper';
+import { FieldsContext } from '../../contexts/fields';
+import useSave from '../../hooks/useSave';
 
 const Actions = () => {
-    const [state, setState] = React.useState({ open: false });
+
+    const { handleAddService } = useContext(FieldsContext)
+
+    const [state, setState] = useState({ open: false });
 
     const onStateChange = ({ open }: { open: boolean }) => setState({ open });
 
     const { open } = state;
+
+    const { handleSave } = useSave()
 
     return (
         <FAB.Group
@@ -22,8 +29,7 @@ const Actions = () => {
                 {
                     icon: 'content-save-check',
                     label: 'Salvar',
-                    onPress: () => console.log('Pressed star'),
-                    rippleColor: "#1d1d2e",
+                    onPress: handleSave,
                     color: '#fff',
                     style: {
                         backgroundColor: "rgb(28, 27, 31)",
@@ -34,7 +40,6 @@ const Actions = () => {
                     icon: 'trash-can',
                     label: 'Deletar',
                     onPress: () => console.log('Pressed email'),
-                    rippleColor: "#1d1d2e",
                     color: '#fff',
                     style: {
                         backgroundColor: "rgb(28, 27, 31)",
@@ -44,8 +49,7 @@ const Actions = () => {
                 {
                     icon: 'table-row-plus-after',
                     label: 'Adicionar serviço',
-                    onPress: () => console.log('Pressed notifications'),
-                    rippleColor: "#1d1d2e",
+                    onPress: handleAddService,
                     color: '#fff',
                     style: {
                         backgroundColor: "rgb(28, 27, 31)",

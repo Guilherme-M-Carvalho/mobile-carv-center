@@ -1,14 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import * as React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AnimatedFAB, List, MD3Colors, Searchbar } from 'react-native-paper';
 import { StackParamsList } from '../../../../routes/app.routes';
 import SubTitle from '../../../../components/subTitle';
+import useFind from '../../hooks/useFind';
+import { useEffect, useState } from 'react';
 
 const Screen = () => {
-    const [searchQuery, setSearchQuery] = React.useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
+    const { handleFind, data } = useFind()
+
+    useEffect(() => {
+        handleFind()
+    }, [])
+
+    console.log({
+        data
+    });
+
 
     return (
         <View style={{
@@ -34,16 +45,21 @@ const Screen = () => {
                 />
                 <SubTitle text="Lista de serviços" />
                 <ScrollView>
-                    <List.Accordion description="sdsadsad" titleStyle={{
-                        color: "rgb(28, 27, 31)"
-                    }} rippleColor={"rgb(28, 27, 31)"} style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 0,
-                        backgroundColor: "rgb(242 242 242)",
-                        borderRadius: 8
-                    }} left={() => <List.Icon color={MD3Colors.tertiary70} icon="folder" />} title="Accordion 1" id="1">
-                        <List.Item title="Item 1" />
-                    </List.Accordion>
+                    {data.map(service => (
+                        <List.Accordion key={service?.id} onLongPress={() => {
+                            navigation.navigate('editarService', {id: service.id})
+                            
+                        }} description={service?.serviceDetail?.reduce((accumulator: string, currentValue: any, index: number) => String(accumulator) + currentValue.description + (service?.serviceDetail?.length > 1 && index != service?.serviceDetail?.length - 1 ? ", " : ""), " ")} titleStyle={{
+                            color: "rgb(28, 27, 31)"
+                        }} rippleColor={"rgb(28, 27, 31)"} style={{
+                            paddingHorizontal: 8,
+                            paddingVertical: 0,
+                            backgroundColor: "rgb(242 242 242)",
+                            borderRadius: 8
+                        }} left={() => <List.Icon color={MD3Colors.tertiary70} icon="folder" />} title={`${service?.car?.description} - ${service?.car?.plate}`} id={service?.id}>
+                            <List.Item title="Item 1" />
+                        </List.Accordion>
+                    ))}
                 </ScrollView>
             </View>
             <AnimatedFAB
