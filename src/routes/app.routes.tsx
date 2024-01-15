@@ -49,7 +49,7 @@ export default function AppRoutes() {
 }
 
 export type StackParamsList = {
-    service: undefined
+    serviceList: undefined
     createService: undefined
     editarService: {
         id: number
@@ -66,11 +66,11 @@ function ServiceRoutes() {
             headerBackVisible: true,
             header: (props) => <AppBarService  {...props} />,
 
-        }} initialRouteName="service">
+        }} initialRouteName="serviceList">
             <Stack.Screen options={{
                 title: "Serviço",
                 headerBackVisible: false,
-            }} name="service" component={Service} />
+            }} name="serviceList" component={Service} />
             <Stack.Screen options={{
                 title: "Criar Serviço",
             }} name="createService" component={CreateService} />

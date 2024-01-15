@@ -10,6 +10,7 @@ import { ServiceDetailProps } from "../../types";
 import Actions from "../actions";
 import useFindCarByPlate from "../../hooks/useFindCarByPlate";
 import useFind from "../../hooks/useFind";
+import { apiUrl } from "../../../../services/apiUrl";
 
 type ServiceDetailRProps = {
     editarService :{
@@ -87,7 +88,7 @@ export default function Screen() {
                                         <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteImg({ i })} />
                                     </View>
                                     <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                        <Card.Cover source={{ uri: img.uri }} style={{ height: 100 }} />
+                                        <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri  }} style={{ height: 100 }} />
                                     </Card>
                                 </View>
                             ))}
@@ -125,6 +126,10 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
 
     const { onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService } = useContext(FieldsContext)
 
+    console.log({
+        images
+    });
+    
 
 
     return (
@@ -169,7 +174,8 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                             padding: 8
                         }}
                     >
-                        {images.map((img, i) => img.before && (
+                        {images.map((img, i) => {
+                            return img.before && (
                             <View key={i} style={{
                                 position: "relative"
                             }}>
@@ -183,10 +189,10 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                                     <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteServiceImg({ i, index })} />
                                 </View>
                                 <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                    <Card.Cover source={{ uri: img.uri }} style={{ height: 100 }} />
+                                    <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri }} style={{ height: 100, width: 100 }} />
                                 </Card>
                             </View>
-                        ))}
+                        )})}
                     </ScrollView>
                 </View>
             </View>
@@ -238,7 +244,7 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                                     <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteServiceImg({ i, index })} />
                                 </View>
                                 <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                    <Card.Cover source={{ uri: img.uri }} style={{ height: 100 }} />
+                                    <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri  }} style={{ height: 100 }} />
                                 </Card>
                             </View>
                         ))}

@@ -13,7 +13,7 @@ export default function useSave(){
 
     const handleSave = async () => {
         showLoading()
-        const dados = handleData()
+        const dados = await handleData()
         try {
             const { data } =  await api.post("/service", dados)
             showAlert({text: "Serviço cadastrado com sucesso!"})

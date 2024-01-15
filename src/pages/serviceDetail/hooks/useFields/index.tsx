@@ -81,6 +81,11 @@ export default function useFields() {
             quality: 1,
         });
 
+        console.log({
+            result
+        });
+        
+
         if (!result.canceled) {
             const img = {
                 uri: result.assets[0].uri,
@@ -154,11 +159,6 @@ export default function useFields() {
     const handleSetAllFields: HandleSetAllProps = (fields) => {
         setFields({ ...fields })
     }
-
-    console.log([
-        fields
-    ]);
-    
 
     const total = fields.serviceDetail.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
 

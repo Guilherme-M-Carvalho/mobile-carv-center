@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AnimatedFAB, List, MD3Colors, Searchbar } from 'react-native-paper';
@@ -11,15 +11,14 @@ const Screen = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
     const { handleFind, data } = useFind()
+    const route = useRoute()
+    console.log(route);
+    
 
     useEffect(() => {
+        if("serviceList" === route.name)
         handleFind()
-    }, [])
-
-    console.log({
-        data
-    });
-
+    }, [route.name])
 
     return (
         <View style={{

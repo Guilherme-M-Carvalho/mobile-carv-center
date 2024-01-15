@@ -28,7 +28,15 @@ export default function useFind() {
                     value: data?.car?.plate
                 },
                 id: id,
-                images: [],
+                images: data?.car?.image?.map((img: any) => {
+                    const image: ImageProps = {
+                        uri: img?.name,
+                        id: img?.id,
+                    }
+                    return  {
+                        ...image
+                    }
+                }),
                 serviceDetail: data?.serviceDetail?.map((sev: any) => {
                     const servi: ServiceDetailProps ={
                         description: {
