@@ -43,7 +43,7 @@ export default function Home() {
           Sair
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("service")}>
+      <TouchableOpacity onPress={() => navigation.navigate("ser")}>
         <Text>
           Service
         </Text>

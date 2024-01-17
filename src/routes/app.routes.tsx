@@ -11,7 +11,7 @@ import CreateService from "../pages/serviceDetail";
 
 export type BottomNavigationParamsList = {
     home: undefined;
-    service: undefined
+    ser: undefined
 }
 
 const Tab = createBottomTabNavigator<BottomNavigationParamsList>();
@@ -43,7 +43,7 @@ export default function AppRoutes() {
             <Tab.Screen options={{
                 tabBarIcon: ({ color, size }) => (<FontAwesome5 name="car" color={color} size={size} />),
                 tabBarLabel: "Serviço",
-            }} name="service" component={ServiceRoutes} />
+            }} name="ser" component={ServiceRoutes} />
         </Tab.Navigator>
     )
 }
