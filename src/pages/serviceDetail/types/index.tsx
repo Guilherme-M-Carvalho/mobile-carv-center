@@ -37,7 +37,7 @@ export type ImageProps = {
 }
 
 export type HandleSetAllProps = (fields: FieldsProps) => void
-export type HandleFindByPlateProps = ({description}: {description: string}) => void
+export type HandleFindByPlateProps = ({description, images}: {description: string; images: ImageProps[]}) => void
 export type HandleDeleteServiceProps = ({index}: {index: number}) => void
 export type OnDeleteImgProps = ({i}: {i: number}) => void
 export type OnDeleteServiceImgProps = ({index, i}: {i: number; index: number}) => void

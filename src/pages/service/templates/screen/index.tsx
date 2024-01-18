@@ -12,8 +12,6 @@ const Screen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
     const { handleFind, data } = useFind()
     const route = useRoute()
-    console.log(route);
-    
 
     useEffect(() => {
         if("serviceList" === route.name)

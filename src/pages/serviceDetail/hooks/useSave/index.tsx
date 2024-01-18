@@ -14,11 +14,25 @@ export default function useSave(){
     const handleSave = async () => {
         showLoading()
         const dados = await handleData()
+// 
+        console.log(dados);
+        
+        
+
         try {
-            const { data } =  await api.post("/service", dados)
+            const { data } =  await api({url: "/service", data:dados, method: "post", headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            } })
             showAlert({text: "Serviço cadastrado com sucesso!"})
             navigation.goBack()
         } catch (error: any) {
+            console.log({
+                error,
+                message: error?.response?.status,
+                message2: error?.response?.data?.error
+            });
+            
             showAlert({
                 text: error?.response?.data?.error
             })

@@ -13,7 +13,7 @@ export default function useData(fields: FieldsProps) {
             image: fields.images.map(el => {
                 return {
                     name: 'el.uri',
-                    id: el.id
+                    id: el?.id
                 }
             }),
             serviceDetail: fields.serviceDetail.map(service => {
@@ -32,25 +32,44 @@ export default function useData(fields: FieldsProps) {
             })
         }
 
-        const formData = new FormData()
+        const formData = new FormData() as any
         formData.append("car", JSON.stringify(data.car))
         formData.append("serviceDetail", JSON.stringify(data.serviceDetail))
         await Promise.all(fields.images.map(async (img) => {
-            await fetch(img.uri)
-                .then(res => res.blob())
-                .then(blob => {
-                    const file = new File([blob], "file.png", { type: "image/png" })
-                    formData.append("vehicle", file)
-                })
-        }))
-        await Promise.all(fields.serviceDetail.map(async ({ images }) => {
-            await Promise.all(images.map(async (img) => {
+            if (!img.id) {
                 await fetch(img.uri)
                     .then(res => res.blob())
                     .then(blob => {
                         const file = new File([blob], "file.png", { type: "image/png" })
-                        formData.append("service", file)
+                        console.log({
+                            uri: img.uri,
+                            type: 'image/jpeg',
+                            name: 'profile-picture'
+                        });
+                        
+                        formData.append("vehicle", {
+                            uri: img.uri,
+                            type: 'image/jpeg',
+                            name: 'profile-picture'
+                        })
                     })
+            }
+        }))
+        await Promise.all(fields.serviceDetail.map(async ({ images }) => {
+            await Promise.all(images.map(async (img) => {
+                if (!img.id) {
+                    await fetch(img.uri)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], "file.png", { type: "image/png" })
+                            console.log(file, blob);
+                            formData.append("service",{
+                                uri: img.uri,
+                                type: 'image/jpeg',
+                                name: 'profile-picture'
+                            })
+                        })
+                }
             }))
         }))
 

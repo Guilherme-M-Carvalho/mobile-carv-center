@@ -81,10 +81,6 @@ export default function useFields() {
             quality: 1,
         });
 
-        console.log({
-            result
-        });
-        
 
         if (!result.canceled) {
             const img = {
@@ -146,10 +142,15 @@ export default function useFields() {
             }
         })
     }
+    // console.log({fields});
+    
 
-    const handleFindByPlate: HandleFindByPlateProps = ({ description }) => {
+    const handleFindByPlate: HandleFindByPlateProps = ({ description, images }) => {
+        console.log({images});
+        
         setFields(obj => {
             obj.description.value = description
+            obj.images = images
             return {
                 ...obj
             }

@@ -125,10 +125,6 @@ export default function Screen() {
 function Service({ description, index, price, images }: ServiceDetailProps & { index: number }) {
 
     const { onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService } = useContext(FieldsContext)
-
-    console.log({
-        images
-    });
     
 
 
