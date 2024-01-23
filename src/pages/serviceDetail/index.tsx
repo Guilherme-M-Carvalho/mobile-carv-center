@@ -4,7 +4,6 @@ import Screen from "./templates/screen";
 
 export default function ServiceDetail(){
 
-    
 
     return (<FieldsProvider>
         <Screen />

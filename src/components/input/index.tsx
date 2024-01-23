@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { HelperText, TextInput, TextInputProps } from "react-native-paper";
+import { transparent } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 interface InputProps {
     error: boolean;
@@ -11,8 +12,9 @@ export default function Input({
     helperText, ...props
 }: TextInputProps & InputProps) {
     return (
-        <View>
-
+        <View style={{
+            height: "auto"
+        }}>
             <TextInput
                 mode="outlined"
                 outlineColor="rgb(142, 142, 143)"
@@ -24,9 +26,11 @@ export default function Input({
                 }}
                 {...props}
             />
-            <HelperText type="error" visible={error}>
-                {helperText}
-            </HelperText>
+            {error &&
+                <HelperText type="error" visible={error}>
+                    {helperText}
+                </HelperText>
+            }
         </View>
     )
 }

@@ -63,6 +63,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
                 email,
                 password
             })
+            if(data?.failed){
+                hideLoading()
+                showAlert({
+                    text: data?.error,
+                    type: "error"
+                })
+                return
+            }
 
             const { name, id, email: emailRes, token } = data
 
@@ -81,11 +89,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
             await AsyncStorage.setItem("@reactnative", JSON.stringify(local))
             showAlert({
-                text: "Login efetuado com sucesso!"
+                text: "Login efetuado com sucesso!",
+                type: "success"
             })
         } catch (error: any) {
             showAlert({
-                text: error?.response?.data?.error
+                text: error?.response?.data?.error,
+                type: "error"
             })
         }
         hideLoading()

@@ -13,7 +13,7 @@ import useFind from "../../hooks/useFind";
 import { apiUrl } from "../../../../services/apiUrl";
 
 type ServiceDetailRProps = {
-    editarService :{
+    editarService: {
         id: number
     }
 }
@@ -22,20 +22,19 @@ type ServiceDetailRouteProps = RouteProp<ServiceDetailRProps, 'editarService'>
 
 export default function Screen() {
 
-    const route= useRoute<ServiceDetailRouteProps>()
+    const route = useRoute<ServiceDetailRouteProps>()
 
 
     const { onChangeField, fields, pickImage, onDeleteImg, total } = useContext(FieldsContext)
     const { handleFind } = useFindCarByPlate()
     const { handleFind: handleFindService } = useFind()
     useEffect(() => {
-        if(!!route.params?.id){
+        if (!!route.params?.id) {
             handleFindService({
                 id: route.params.id
             })
         }
-    },[])
-
+    }, [])
     return (<View style={{
         flex: 1
     }}>
@@ -43,6 +42,78 @@ export default function Screen() {
             paddingHorizontal: 8,
             flex: 1
         }}>
+            {/* {fields.id && */}
+            <View style={{
+                marginHorizontal: 8,
+                marginBottom: 8,
+                padding: 8,
+                borderWidth: 1,
+                borderColor: "rgb(28, 27, 31)",
+                backgroundColor: "#fff", borderRadius: 4
+            }}>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={{
+                        fontSize: 14,
+                        color: "rgb(28, 27, 31)",
+                        fontWeight: "600"
+                    }}>Total: </Text>
+                    <Text style={{
+                        fontSize: 14,
+                        color: "rgb(28, 27, 31)",
+                        fontWeight: "400"
+                    }}> R$ {total}</Text>
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={{
+                        fontSize: 14,
+                        color: "rgb(28, 27, 31)",
+                        fontWeight: "600"
+                    }}>Qtd: </Text>
+                    <Text style={{
+                        fontSize: 14,
+                        color: "rgb(28, 27, 31)",
+                        fontWeight: "400"
+                    }}>{fields.serviceDetail.length}</Text>
+                </View>
+                {fields?.createdAt &&
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "rgb(28, 27, 31)",
+                            fontWeight: "600"
+                        }}>Criado em: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "rgb(28, 27, 31)",
+                            fontWeight: "400"
+                        }}>{new Intl.DateTimeFormat('pt-BR', {
+                            dateStyle: 'short',
+                            timeStyle: 'medium',
+                        }).format(new Date(fields?.createdAt))}</Text>
+                    </View>
+
+                }
+                {fields?.updatedAt &&
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "rgb(28, 27, 31)",
+                            fontWeight: "600"
+                        }}>Alterado em: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "rgb(28, 27, 31)",
+                            fontWeight: "400"
+                        }}>{new Intl.DateTimeFormat('pt-BR', {
+                            dateStyle: 'short',
+                            timeStyle: 'medium',
+                            timeZone: 'GMT'
+                        }).format(new Date(fields?.updatedAt))}</Text>
+                    </View>
+
+                }
+
+            </View>
             <ScrollView>
                 <SubTitle text="Dados do veículo" />
                 <View style={{
@@ -57,6 +128,8 @@ export default function Screen() {
                     />
                     <Input
                         {...fields.plate}
+                        maxLength={7}
+                        disabled={!!fields.id}
                         label={"Placa"}
                         onChangeText={value => onChangeField({ value, field: "plate" })}
                         right={<TextInput.Icon icon={"magnify"} onPress={() => handleFind()} />}
@@ -74,7 +147,7 @@ export default function Screen() {
                                 padding: 8
                             }}
                         >
-                            {fields.images.map((img, i) => (
+                            {fields.images.map((img, i) => !img.deleted && (
                                 <View key={i} style={{
                                     position: "relative"
                                 }}>
@@ -88,7 +161,7 @@ export default function Screen() {
                                         <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteImg({ i })} />
                                     </View>
                                     <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                        <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri  }} style={{ height: 100 }} />
+                                        <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` : img.uri }} style={{ height: 100 }} />
                                     </Card>
                                 </View>
                             ))}
@@ -100,20 +173,15 @@ export default function Screen() {
                     flexDirection: "row",
                     justifyContent: "space-between"
                 }}>
-
                     <SubTitle text="Dados do serviço" />
-                    <Text style={{
-                        fontSize: 16,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "600"
-                    }}>Total: R$ {total}</Text>
                 </View>
+
                 <View style={{
                     gap: 8,
                     paddingHorizontal: 8,
                     marginBottom: 8,
                 }}>
-                    {fields.serviceDetail.map((service, index) => (<Service {...service} index={index} key={index} />))}
+                    {fields.serviceDetail.map((service, index) => !service.deleted && (<Service {...service} index={index} key={index} />))}
                 </View>
             </ScrollView>
             <Actions />
@@ -125,8 +193,6 @@ export default function Screen() {
 function Service({ description, index, price, images }: ServiceDetailProps & { index: number }) {
 
     const { onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService } = useContext(FieldsContext)
-    
-
 
     return (
         <>
@@ -171,24 +237,25 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                         }}
                     >
                         {images.map((img, i) => {
-                            return img.before && (
-                            <View key={i} style={{
-                                position: "relative"
-                            }}>
-                                <View style={{
-                                    position: "absolute",
-                                    right: 5,
-                                    top: -13,
-                                    zIndex: 10000
+                            return img.before && !img.deleted ? (
+                                <View key={i} style={{
+                                    position: "relative"
                                 }}>
+                                    <View style={{
+                                        position: "absolute",
+                                        right: 5,
+                                        top: -13,
+                                        zIndex: 10000
+                                    }}>
 
-                                    <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteServiceImg({ i, index })} />
+                                        <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteServiceImg({ i, index })} />
+                                    </View>
+                                    <Card style={{ width: 100, height: 100, marginRight: 16, }}>
+                                        <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` : img.uri }} style={{ height: 100, width: 100 }} />
+                                    </Card>
                                 </View>
-                                <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                    <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri }} style={{ height: 100, width: 100 }} />
-                                </Card>
-                            </View>
-                        )})}
+                            ) : null
+                        })}
                     </ScrollView>
                 </View>
             </View>
@@ -226,7 +293,7 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                             padding: 8
                         }}
                     >
-                        {images.map((img, i) => !img.before && (
+                        {images.map((img, i) => !img.before && !img.deleted ? (
                             <View key={i} style={{
                                 position: "relative"
                             }}>
@@ -240,10 +307,10 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                                     <IconButton iconColor={"#ba2222"} icon={"close-thick"} onPress={() => onDeleteServiceImg({ i, index })} />
                                 </View>
                                 <Card style={{ width: 100, height: 100, marginRight: 16, }}>
-                                    <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` :  img.uri  }} style={{ height: 100 }} />
+                                    <Card.Cover source={{ uri: img?.id ? `${apiUrl}/files/${img.uri}` : img.uri }} style={{ height: 100 }} />
                                 </Card>
                             </View>
-                        ))}
+                        ) : null)}
                     </ScrollView>
                 </View>
             </View>
@@ -257,13 +324,13 @@ function Service({ description, index, price, images }: ServiceDetailProps & { i
                 position: "relative",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 8
+                marginVertical: 20
             }}>
                 {index > 0 &&
                     <View style={{
                         position: "absolute",
                         zIndex: 10000,
-                        top: -25
+                        top: -25,
                     }}>
                         <IconButton containerColor="rgb(242 242 242)" iconColor={"rgb(28, 27, 31)"} icon={"close-thick"} onPress={() => handleDeleteService({ index })} />
                     </View>

@@ -24,7 +24,7 @@ export default function useFindCarByPlate(){
             
         } catch (error: any) {
             showAlert({
-                text: error?.response?.data?.error
+                text: error?.response?.data?.error, type: "error"
             })
         }
         hideLoading()

@@ -19,6 +19,8 @@ export default function useFind() {
                 value: ""
             }
             const fields: FieldsProps = {
+                createdAt: new Date(data?.created_at),
+                updatedAt: new Date(data?.updated_at),
                 description: {
                     ...input,
                     value: data?.car?.description
@@ -69,7 +71,7 @@ export default function useFind() {
             handleSetAllFields(fields)
         } catch (error: any) {
             showAlert({
-                text: error?.response?.data?.error
+                text: error?.response?.data?.error, type: "error"
             })
         }
         hideLoading()

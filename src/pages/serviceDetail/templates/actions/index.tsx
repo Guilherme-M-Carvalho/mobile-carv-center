@@ -2,10 +2,12 @@ import { useContext, useState } from 'react';
 import { FAB } from 'react-native-paper';
 import { FieldsContext } from '../../contexts/fields';
 import useSave from '../../hooks/useSave';
+import useDelete from '../../hooks/useDelete';
+import usePdf from '../../hooks/usePdf';
 
 const Actions = () => {
 
-    const { handleAddService } = useContext(FieldsContext)
+    const { handleAddService, fields } = useContext(FieldsContext)
 
     const [state, setState] = useState({ open: false });
 
@@ -14,6 +16,56 @@ const Actions = () => {
     const { open } = state;
 
     const { handleSave } = useSave()
+    const { handleDelete } = useDelete()
+
+    const { generatePdf } = usePdf()
+
+    const action = [
+        {
+            icon: 'content-save-check',
+            label: 'Salvar',
+            onPress: handleSave,
+            color: '#fff',
+            style: {
+                backgroundColor: "rgb(28, 27, 31)",
+            },
+            labelTextColor: "#fff"
+        },
+        {
+            icon: 'trash-can',
+            label: 'Deletar',
+            onPress: handleDelete,
+            color: '#fff',
+            style: {
+                backgroundColor: "rgb(28, 27, 31)",
+            },
+            labelTextColor: "#fff"
+        },
+        {
+            icon: 'table-row-plus-after',
+            label: 'Adicionar serviço',
+            onPress: handleAddService,
+            color: '#fff',
+            style: {
+                backgroundColor: "rgb(28, 27, 31)",
+            },
+            labelTextColor: "#fff"
+        },
+        {
+            icon: 'file-pdf-box',
+            label: 'Gerar ordem serviço',
+            onPress: generatePdf,
+            color: '#fff',
+            style: {
+                backgroundColor: "rgb(28, 27, 31)",
+            },
+            labelTextColor: "#fff"
+        },
+    ]
+
+    if(!fields.id){
+        action.splice(1, 1)
+    }
 
     return (
         <FAB.Group
@@ -25,38 +77,7 @@ const Actions = () => {
             fabStyle={{
                 backgroundColor: "rgb(28, 27, 31)"
             }}
-            actions={[
-                {
-                    icon: 'content-save-check',
-                    label: 'Salvar',
-                    onPress: handleSave,
-                    color: '#fff',
-                    style: {
-                        backgroundColor: "rgb(28, 27, 31)",
-                    },
-                    labelTextColor: "#fff"
-                },
-                {
-                    icon: 'trash-can',
-                    label: 'Deletar',
-                    onPress: () => console.log('Pressed email'),
-                    color: '#fff',
-                    style: {
-                        backgroundColor: "rgb(28, 27, 31)",
-                    },
-                    labelTextColor: "#fff"
-                },
-                {
-                    icon: 'table-row-plus-after',
-                    label: 'Adicionar serviço',
-                    onPress: handleAddService,
-                    color: '#fff',
-                    style: {
-                        backgroundColor: "rgb(28, 27, 31)",
-                    },
-                    labelTextColor: "#fff"
-                },
-            ]}
+            actions={action}
             onStateChange={onStateChange}
             onPress={() => {
                 if (open) {

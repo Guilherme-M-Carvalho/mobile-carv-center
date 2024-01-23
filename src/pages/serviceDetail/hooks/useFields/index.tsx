@@ -98,7 +98,7 @@ export default function useFields() {
 
     const onDeleteImg: OnDeleteImgProps = ({ i }) => {
         setFields(obj => {
-            obj.images.splice(i, 1)
+            obj.images[i].deleted = true
             return {
                 ...obj
             }
@@ -106,7 +106,7 @@ export default function useFields() {
     }
     const onDeleteServiceImg: OnDeleteServiceImgProps = ({ index, i }) => {
         setFields(obj => {
-            obj.serviceDetail[index].images.splice(i, 1)
+            obj.serviceDetail[index].images[i].deleted = true
             return {
                 ...obj
             }
@@ -136,18 +136,14 @@ export default function useFields() {
 
     const handleDeleteService: HandleDeleteServiceProps = ({ index }) => {
         setFields(obj => {
-            obj.serviceDetail.splice(index, 1)
+            obj.serviceDetail[index].deleted = true
             return {
                 ...obj
             }
         })
     }
-    // console.log({fields});
-    
 
     const handleFindByPlate: HandleFindByPlateProps = ({ description, images }) => {
-        console.log({images});
-        
         setFields(obj => {
             obj.description.value = description
             obj.images = images
