@@ -11,16 +11,17 @@ export default function useFindCarByPlate(){
         showLoading()
         try {
             const { data } =  await api.get("/car/"+fields.plate.value)
-            
-            handleFindByPlate({
-                description: data?.description,
-                images: data?.image?.map((el: any) => {
-                    return {
-                        id: el?.id,
-                        uri: el?.name
-                    }
+            if(!data?.failed){
+                handleFindByPlate({
+                    description: data?.description,
+                    images: data?.image?.map((el: any) => {
+                        return {
+                            id: el?.id,
+                            uri: el?.name
+                        }
+                    })
                 })
-            })
+            }
             
         } catch (error: any) {
             showAlert({

@@ -19,10 +19,11 @@ export default function useSave() {
 
         try {
             const { data } = await api({
-                url: "/service" + (fields.id ? `/${fields.id}`: "") , data: dados, method: fields.id ? "put" : "post", headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                }
+                url: "/service" + (fields.id ? `/${fields.id}`: "") , data: dados, method: fields.id ? "put" : "post", 
+                // headers: {
+                //     Accept: 'application/json',
+                //     'Content-Type': 'multipart/form-data',
+                // }
             })
             if (data.failed) {
                 handleError({
