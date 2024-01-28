@@ -1,86 +1,49 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { AuthContext } from '../../contexts/AuthContext'
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { BottomNavigationParamsList } from '../../routes/app.routes'
-import { Menu, Divider, Avatar, IconButton, PaperProvider, Icon, Badge, Button } from 'react-native-paper';
-import { Dimensions } from 'react-native';
+import { Icon, Badge, IconButton } from 'react-native-paper';
 import { Chip } from 'react-native-paper';
-import DatePicker from 'react-native-date-picker'
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import DateTimePicker from '@react-native-community/datetimepicker';
+import useFind from './hooks/useFind'
+import { VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from 'victory-native'
+import SubTitle from '../../components/subTitle'
+import useFindReport from './hooks/useFindReport'
+
 
 export default function Home() {
 
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [dateReport, setDateReport] = useState<{ start?: Date; end?: Date; visibleStart: boolean; visibleEnd: boolean }>({ start: new Date(), end: new Date(), visibleEnd: false, visibleStart: false })
+  const [visibleDate, setVisibleDate] = useState<boolean>(false)
+
+
   const navigation = useNavigation<NativeStackNavigationProp<BottomNavigationParamsList>>()
 
-  const { signOut, user } = useContext(AuthContext)
-  const [visible, setVisible] = useState(false);
+  const isFocused = useIsFocused();
 
-  const openMenu = () => setVisible(true);
-
-  const closeMenu = () => setVisible(false);
-
-  const ref = useRef<any>()
-
-  const [x, SetX] = useState<number>((windowWidth / 2))
+  const { handleFind, home } = useFind()
+  const { handleFindReport, report } = useFindReport()
 
   useEffect(() => {
-    SetX(windowWidth - ref?.current?.offsetWidth - 200)
-  }, [ref.current])
+    if (isFocused && date) {
+      handleFind({ date })
+    }
+    if (isFocused && dateReport.start && dateReport.end) {
+      handleFindReport({ start: dateReport.start, end: dateReport.end })
+    }
+  }, [isFocused])
+
+  useEffect(() => {
+    if (date) {
+      handleFind({ date })
+    }
+  }, [date])
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={{
-        padding: 16,
-        paddingBottom: 52,
-        backgroundColor: "rgb(28, 27, 31)",
-        justifyContent: "space-between",
-        flexDirection: "row",
-        alignItems: "center"
-      }}>
-        <Text style={{
-          color: "#fff",
-          fontSize: 16,
-          fontWeight: "600",
-          flex: 1
-        }}>Olá, {user.name}</Text>
-        <IconButton
-          size={12}
-          ref={ref}
-          iconColor='#fff'
-          containerColor='#fff'
-          icon={() => <Text style={{
-            fontWeight: "600"
-          }}>{user.name[0]}</Text>}
-          onPress={openMenu}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <Menu
-            contentStyle={{
-              backgroundColor: "#fff"
-            }}
-            style={{
-              zIndex: 11
-            }}
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={{
-              x: x,
-              y: 20
-            }}>
-            {/* <Menu.Item onPress={() => { }} title="Item 1" />
-            <Menu.Item onPress={() => { }} title="Item 2" /> */}
-            {/* <Divider /> */}
-            <Menu.Item onPress={signOut} title="Sair" leadingIcon={"logout"} />
-          </Menu>
-        </View>
-      </View>
       <View style={{
         position: "relative",
         flex: 1,
@@ -89,18 +52,21 @@ export default function Home() {
         flexDirection: "column",
       }}>
         <View style={{
+          width: "100%",
+          backgroundColor: "#1c1b1f",
+          height: 75
+        }} />
+        <View style={{
           backgroundColor: "#ffffff",
           position: "absolute",
-          top: -40,
-          zIndex: 10,
+          top: 0,
+          zIndex: 100000,
           flex: 1,
-          shadowColor: "rgba(0,0,0,.175)",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowRadius: 4,
-          shadowOpacity: 4,
+          shadowColor: '#171717',
+          shadowOffset: { width: -2, height: 4 },
+          shadowOpacity: 0.2,
+          shadowRadius: 3,
+          elevation: 20,
           padding: 8,
           borderRadius: 8,
           width: "80%",
@@ -122,7 +88,7 @@ export default function Home() {
               color: "#000"
             }}>{new Intl.DateTimeFormat('pt-BR', {
               dateStyle: 'medium',
-            }).format(new Date())}</Text>} />
+            }).format(date ? date : new Date())}</Text>} />
             <Chip icon={() => <Icon
               source="currency-usd"
               color={"#000"}
@@ -146,28 +112,27 @@ export default function Home() {
               <View style={{ position: "relative" }}>
                 <Icon
                   source="cart"
-                  color={"rgba(28, 27, 31)"}
+                  color={"#1B1C1F"}
                   size={28}
                 />
                 <Badge style={{
                   position: "absolute",
                   right: -9,
                   top: -9
-                }} size={18}>3</Badge>
+                }} size={18}>{home.count}</Badge>
               </View>
               <Text style={{
                 fontWeight: "800",
                 fontSize: 12,
                 paddingRight: 16,
-                color: "rgba(28, 27, 31)"
+                color: "#1B1C1F"
               }}>Vendas</Text>
             </View>
             <Text style={{
               fontWeight: "800",
               fontSize: 18,
-              paddingRight: 16,
-              color: "rgba(28, 27, 31)"
-            }}>R$ 300</Text>
+              color: "#1B1C1F"
+            }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(home.total)}</Text>
           </View>
           <TouchableOpacity style={{
             backgroundColor: "#1c1b1f",
@@ -175,30 +140,180 @@ export default function Home() {
             alignItems: "center",
             padding: 6,
             borderRadius: 8
-          }}> <Text style={{
-            color: "#fff",
-          }}>
-              Alterar Data
+          }} onPress={() => setVisibleDate(true)}>
+            <Text style={{
+              color: "#fff",
+            }}>
+              Escolher Data
             </Text>
           </TouchableOpacity>
+
         </View>
         <ScrollView style={{
-          paddingHorizontal: 16,
-          marginTop: 116,
+          paddingHorizontal: 8,
+          marginTop: 91,
           flex: 1,
           width: "100%"
         }}>
-          <DatePicker
-            modal
-            date={new Date()}
-            mode="date"
-          />
-          <Text>Home</Text>
+          <View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+            <SubTitle text="Relatório" />
+            <IconButton onPress={() => {
+              if (dateReport.start && dateReport.end) {
+                handleFindReport({ start: dateReport.start, end: dateReport.end })
+              }
+            }} iconColor='#1B1C1F' icon={"magnify"} />
+          </View>
+          <View style={{
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 8
+          }}>
+            <Chip onPress={() => {
+              setDateReport(obj => {
+                obj.visibleStart = true
+                return {
+                  ...obj
+                }
+              })
+            }} icon={() => <Icon
+              source="calendar-alert"
+              color={"#000"}
+              size={18}
+            />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
+              fontSize: 10,
+              fontWeight: "600",
+              color: "#000"
+            }}>{new Intl.DateTimeFormat('pt-BR', {
+              dateStyle: 'medium',
+            }).format(dateReport?.start ? dateReport?.start : new Date())}</Text>} />
+            <Chip onPress={() => {
+              setDateReport(obj => {
+                obj.visibleEnd = true
+                return {
+                  ...obj
+                }
+              })
+            }} icon={() => <Icon
+              source="calendar-alert"
+              color={"#000"}
+              size={18}
+            />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
+              fontSize: 10,
+              fontWeight: "600",
+              color: "#000"
+            }}>{new Intl.DateTimeFormat('pt-BR', {
+              dateStyle: 'medium',
+            }).format(dateReport?.end ? dateReport?.end : new Date())}</Text>} />
+          </View>
+          <VictoryChart
+            theme={VictoryTheme.material}
+            containerComponent={<VictoryVoronoiContainer
+              voronoiDimension="x"
+              labels={(d: any) => {return `${d?.datum?.qtd} Vendas\n${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d?.datum?.y)}`}}
+              labelComponent={
+                  <VictoryTooltip
+                      cornerRadius={0}
+                      flyoutStyle={{
+                          stroke: '#C0AB8E',
+                          fill: '#F0EDE5',
+                      }}
+                      width={400}
+                      renderInPortal={true}
+                  />
+              }
+          />}
+            style={{
+              
+
+            }} minDomain={{ y: 0, x: 0 }}
+          >
+            <VictoryLine
+
+              style={{
+                data: { stroke: "#171717" },
+                parent: { border: "1px solid #ccc" },
+
+              }}
+              // labels={(el: any) => {
+              //   return `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(el?.datum?.y)}`
+              // }}
+              data={report}
+            />
+          </VictoryChart>
         </ScrollView>
       </View>
+      {visibleDate &&
+        <DateTimePicker
+          onChange={(e, date) => {
+            const {
+              type,
+              nativeEvent
+            } = e;
+            setDate(date);
+
+            if (type == "dismissed" || type == "set") {
+
+              setVisibleDate(false)
+            }
+          }}
+          // display='calendar'
+          value={date ? date : new Date()}
+          mode={"date"}
+        />
+      }
+      {dateReport.visibleStart &&
+        <DateTimePicker
+          onChange={(e, date) => {
+            const {
+              type,
+              nativeEvent
+            } = e;
+            if (type == "dismissed" || type == "set") {
+              setDateReport(obj => {
+                obj.visibleStart = false
+                obj.start = date
+                return {
+                  ...obj
+                }
+              })
+            }
+          }}
+          // display='calendar'
+          value={dateReport.start ? dateReport.start : new Date()}
+          mode={"date"}
+        />
+      }
+      {dateReport.visibleEnd &&
+        <DateTimePicker
+          onChange={(e, date) => {
+            const {
+              type,
+              nativeEvent
+            } = e;
+            if (type == "dismissed" || type == "set") {
+              setDateReport(obj => {
+                obj.visibleEnd = false
+                obj.end = date
+                return {
+                  ...obj
+                }
+              })
+            }
+          }}
+          // display='calendar'
+          value={dateReport.end ? dateReport.end : new Date()}
+          mode={"date"}
+        />
+      }
     </View >
   )
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

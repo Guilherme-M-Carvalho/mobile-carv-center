@@ -3,35 +3,36 @@ import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext";
 import { api } from "../../../../services/api";
 import { FieldsContext } from "../../contexts/fields";
 // import Share from 'react-native-share';
+import { Buffer } from 'buffer'
 import { apiUrl } from "../../../../services/apiUrl";
-// import { Share } from "react-native";
-
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import useSave from "../useSave";
 export default function usePdf() {
     const { showLoading, hideLoading } = useContext(GlobalAlertContext)
     const { fields } = useContext(FieldsContext)
+    const { handleSave } = useSave()
 
     const generatePdf = async () => {
         showLoading()
         try {
+            if (fields.id) {
+                await handleSave()
+                showLoading()
+            }
+            const { data: pdf } = await api({ method: "get", url: "/service/os/" + fields.id, });
 
-            // const { data: pdf } = await api({ method: "get", url: "/service/os/" + fields.id, });
-            // const data = Uint8Array.from(pdf.pdf.data);
-            // const reponseShare = await Share.open({
-            //     url: `${apiUrl}/files/os-${fields.id}.pdf`,
-            //     message: "teste"
-            // })
-            // const content = new Blob([data.buffer], { type: "application/pdf" });
-            // const result = await Share.share({
-            //     url: data.bu,
+            FileSystem.downloadAsync(
+                `${apiUrl}/files/os-${fields.id}.pdf`,
+                FileSystem.documentDirectory + `os-${fields.id}.pdf`
+            )
+                .then(({ uri }) => {
+                    Sharing.shareAsync(uri);
 
-            // });
-            // Share.open({
-            //     message: "PDF",
-            //     url: `${apiUrl}/files/os-${fields.id}.pdf`
-            // })
-            // .then(res => console.log(res))
-            // .catch(res => console.log(res))
-
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         } catch (error) {
 
         }

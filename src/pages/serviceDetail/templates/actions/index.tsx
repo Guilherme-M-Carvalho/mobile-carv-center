@@ -27,7 +27,7 @@ const Actions = () => {
             onPress: handleSave,
             color: '#fff',
             style: {
-                backgroundColor: "rgb(28, 27, 31)",
+                backgroundColor: "#1B1C1F",
             },
             labelTextColor: "#fff"
         },
@@ -37,7 +37,7 @@ const Actions = () => {
             onPress: handleDelete,
             color: '#fff',
             style: {
-                backgroundColor: "rgb(28, 27, 31)",
+                backgroundColor: "#1B1C1F",
             },
             labelTextColor: "#fff"
         },
@@ -47,7 +47,7 @@ const Actions = () => {
             onPress: handleAddService,
             color: '#fff',
             style: {
-                backgroundColor: "rgb(28, 27, 31)",
+                backgroundColor: "#1B1C1F",
             },
             labelTextColor: "#fff"
         },
@@ -57,7 +57,7 @@ const Actions = () => {
             onPress: generatePdf,
             color: '#fff',
             style: {
-                backgroundColor: "rgb(28, 27, 31)",
+                backgroundColor: "#1B1C1F",
             },
             labelTextColor: "#fff"
         },
@@ -65,6 +65,7 @@ const Actions = () => {
 
     if(!fields.id){
         action.splice(1, 1)
+        action.splice(2, 1)
     }
 
     return (
@@ -75,7 +76,7 @@ const Actions = () => {
             icon={'dots-horizontal'}
             color='#fff'
             fabStyle={{
-                backgroundColor: "rgb(28, 27, 31)"
+                backgroundColor: "#1B1C1F"
             }}
             actions={action}
             onStateChange={onStateChange}

@@ -5,6 +5,7 @@ import useData from "../useData"
 import { FieldsContext } from "../../contexts/fields"
 import { useNavigation } from "@react-navigation/native"
 import useFailed from "../useFailed"
+import useFind from "../useFind"
 
 export default function useSave() {
     const { fields } = useContext(FieldsContext)
@@ -13,6 +14,8 @@ export default function useSave() {
     const navigation = useNavigation()
     const { handleError } = useFailed()
 
+    const { handleFind } = useFind()
+
     const handleSave = async () => {
         showLoading()
         const dados = await handleData()
@@ -20,11 +23,12 @@ export default function useSave() {
         try {
             const { data } = await api({
                 url: "/service" + (fields.id ? `/${fields.id}`: "") , data: dados, method: fields.id ? "put" : "post", 
-                // headers: {
-                //     Accept: 'application/json',
-                //     'Content-Type': 'multipart/form-data',
-                // }
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                }
             })
+            
             if (data.failed) {
                 handleError({
                     field: data?.field,
@@ -33,7 +37,7 @@ export default function useSave() {
                 })
             } else {
                 showAlert({ text: fields.id ? "Serviço editado com sucesso!" : "Serviço cadastrado com sucesso!", type: "success" })
-                navigation.goBack()
+                await handleFind({id: Number(data?.id)})
             }
         } catch (error: any) {
             console.log({

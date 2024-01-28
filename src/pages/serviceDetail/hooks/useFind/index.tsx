@@ -39,6 +39,12 @@ export default function useFind() {
                         ...image
                     }
                 }),
+                name: {
+                    ...input
+                },
+                phone: {
+                    ...input
+                },
                 serviceDetail: data?.serviceDetail?.map((sev: any) => {
                     const servi: ServiceDetailProps ={
                         description: {
@@ -49,6 +55,7 @@ export default function useFind() {
                             ...input,
                             value: sev?.price
                         },
+                        customerParts: true,
                         images: sev?.image?.map((img: any) => {
                             const image: ImageProps = {
                                 uri: img?.name,
@@ -59,6 +66,13 @@ export default function useFind() {
                                 ...image
                             }
                         }),
+                        parts: {
+                            ...input
+                        },
+                        obs: {
+                            ...input
+                        },
+                        typeService: 0,
                         id: sev?.id
                     }
                     return {

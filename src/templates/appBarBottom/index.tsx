@@ -3,8 +3,9 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { Dimensions, Text, View } from 'react-native';
 import { useContext, useRef, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 
-const AppBarSys = (props: NativeStackHeaderProps) => {
+const AppBarBottomSys = (props: BottomTabHeaderProps) => {
     const windowWidth = Dimensions.get('window').width;
 
     const { user, signOut } = useContext(AuthContext)
@@ -16,19 +17,14 @@ const AppBarSys = (props: NativeStackHeaderProps) => {
     return (
         <>
             <Appbar.Header style={{
-                zIndex: 1,
                 backgroundColor: "#1B1C1F",
             }} >
-                {props.options.headerBackVisible &&
-                    <Appbar.BackAction color='#fff' onPress={() => {
-                        props.navigation.goBack()
-                    }} />
-                }
                 <Appbar.Content titleStyle={{
                     color: "#ffffff",
                     fontSize: 20,
                     fontWeight: "600",
-                }} title={`${props.options.title}`} />
+                }} title={`Olá, ${user.name}`} />
+
                 <IconButton
                     size={16}
                     iconColor='#fff'
@@ -38,6 +34,7 @@ const AppBarSys = (props: NativeStackHeaderProps) => {
                     }}>{user.name[0]}</Text>}
                     onPress={openMenu}
                 />
+
             </Appbar.Header>
             <View
                 style={{
@@ -64,4 +61,4 @@ const AppBarSys = (props: NativeStackHeaderProps) => {
     )
 };
 
-export default AppBarSys;
+export default AppBarBottomSys;

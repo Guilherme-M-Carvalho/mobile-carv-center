@@ -25,29 +25,66 @@ const Screen = () => {
 
     return (
         <View style={{
-            flex: 1
+            flex: 1,
+            backgroundColor: "#fff"
         }}>
             <View style={{
-                paddingHorizontal: 8,
-                flex: 1
+                position: "relative",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
             }}>
+
+                <View style={{
+                    width: "100%",
+                    backgroundColor: "#1c1b1f",
+                    height: 28,
+                }} />
+                <View style={{
+                    backgroundColor: "#ffffff",
+                    position: "absolute",
+                    top: 0,
+                    zIndex: 100000,
+                    flex: 1,
+                    shadowColor: '#171717',
+                    shadowOffset: { width: -2, height: 4 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3,
+                    elevation: 20,
+                    borderRadius: 28,
+                    width: "80%",
+                }}>
+
                 <Searchbar
                     placeholder="Buscar"
                     onChangeText={setSearchQuery}
                     value={searchQuery}
-                    iconColor='#fff'
-                    placeholderTextColor={"#fff"}
+                    iconColor='#1B1C1F'
+                    placeholderTextColor={"#1B1C1F"}
                     inputStyle={{
-                        color: "#fff"
+                        color: "#1B1C1F"
+                    }}
+                    onLayout={(e) => {
+                        const { height } = e.nativeEvent.layout
                     }}
                     style={{
-                        backgroundColor: "rgb(28, 27, 31)",
-                        marginBottom: 8
+                        backgroundColor: "#fff",
                     }}
                 />
-                <SubTitle text="Lista de serviços" />
+                </View>
+
+            </View>
+            <View style={{
+                marginTop: 30,
+                paddingHorizontal: 8,
+                flex: 1
+            }}>
+                {/* <SubTitle text="Lista de serviços" /> */}
                 <ScrollView>
-                    <List.Section>
+                    <List.Section style={{
+                        padding: 8,
+                        gap: 8
+                    }}>
                         {data.filter(el => {
                             const arr = []
                             Object.keys(el).forEach(key => {
@@ -86,98 +123,97 @@ function Service({ service }: any) {
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
 
     return (<>
-        <List.Accordion
-            onLongPress={() => { navigation.navigate('editarService', { id: service.id }) }}
-            description={service?.subTitle}
-            titleStyle={{
-                color: "rgb(28, 27, 31)"
-            }}
-            rippleColor={"rgb(28, 27, 31)"}
-            style={{
-                paddingHorizontal: 8,
-                paddingVertical: 0,
-                backgroundColor: "rgb(242 242 242)",
-            }}
-            left={() => service?.image ? <Avatar.Image
-                size={50}
-                source={{ uri: `${apiUrl}/files/${service.image}` }}
-                style={{ backgroundColor: "rgb(28, 27, 31)" }}
-            />
-                : <Avatar.Icon
+        <View style={{
+            backgroundColor: "#ffffff",
+            shadowColor: '#171717',
+            shadowOffset: { width: -2, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
+            elevation: 5,
+            padding: 8,
+            borderRadius: 8,
+        }}>
+            <List.Accordion
+                onLongPress={() => { navigation.navigate('editarService', { id: service.id }) }}
+                description={service?.subTitle}
+                titleStyle={{
+                    color: "#1B1C1F"
+                }}
+                rippleColor={"#1B1C1F"}
+                style={{
+
+                    paddingVertical: 0,
+                    backgroundColor: "#fff",
+                }}
+                left={() => service?.image ? <Avatar.Image
                     size={50}
-                    style={{ backgroundColor: "rgb(28, 27, 31)" }}
-                    icon={() => <FontAwesome5 name="car" color={"#fff"} size={24} />}
-                    color='#fff'
+                    source={{ uri: `${apiUrl}/files/${service.image}` }}
+                    style={{ backgroundColor: "#1B1C1F" }}
                 />
-            }
-            title={service?.title}
-        >
-            <View style={{
-                marginHorizontal: 8,
-                marginBottom: 8,
-                padding: 8,
-                borderWidth: 1,
-                borderColor: "rgb(28, 27, 31)",
-                backgroundColor: "#fff", borderRadius: 4
-            }}>
-                <View style={{ flexDirection: "row" }}>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "600"
-                    }}>Total: </Text>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "400"
-                    }}> R$ {service?.price}</Text>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "600"
-                    }}>Criado em: </Text>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "400"
-                    }}>{new Intl.DateTimeFormat('pt-BR', {
-                        dateStyle: 'short',
-                        timeStyle: 'medium',
-                    }).format(new Date(service?.createdAt))}</Text>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "600"
-                    }}>Alterado em: </Text>
-                    <Text style={{
-                        fontSize: 14,
-                        color: "rgb(28, 27, 31)",
-                        fontWeight: "400"
-                    }}>{new Intl.DateTimeFormat('pt-BR', {
-                        dateStyle: 'short',
-                        timeStyle: 'medium',
-                        timeZone: 'GMT'
-                    }).format(new Date(service?.updatedAt))}</Text>
-                </View>
+                    : <Avatar.Icon
+                        size={50}
+                        style={{ backgroundColor: "#1B1C1F" }}
+                        icon={() => <FontAwesome5 name="car" color={"#fff"} size={24} />}
+                        color='#fff'
+                    />
+                }
+                title={service?.title}
+            >
+                <View style={{
+                    // marginHorizontal: 8,
+                    marginTop: 8,
+                    marginBottom: 8,
+                    paddingVertical: 8,
+                    backgroundColor: "#fff"
+                }}>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
+                        }}>Total: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service?.price)}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
+                        }}>Criado em: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{new Intl.DateTimeFormat('pt-BR', {
+                            dateStyle: 'short',
+                            timeStyle: 'medium',
+                        }).format(new Date(service?.createdAt))}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
+                        }}>Alterado em: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{new Intl.DateTimeFormat('pt-BR', {
+                            dateStyle: 'short',
+                            timeStyle: 'medium',
+                            timeZone: 'GMT'
+                        }).format(new Date(service?.updatedAt))}</Text>
+                    </View>
 
 
-            </View>
-            {/* <List.Item title={() => <Text>Total: R$ {service?.price} </Text>} />
-            <List.Item title={() => <Text>Criado em: {new Intl.DateTimeFormat('pt-BR', {
-                dateStyle: 'short',
-                timeStyle: 'medium',
-            }).format(new Date(service?.createdAt))} </Text>} />
-            <List.Item title={() => <Text>Alterado em: {new Intl.DateTimeFormat('pt-BR', {
-                dateStyle: 'short',
-                timeStyle: 'medium',
-                timeZone: 'GMT'
-            }).format(new Date(service?.updatedAt))} </Text>} /> */}
-        </List.Accordion>
-        <Divider />
+                </View>
+            </List.Accordion>
+        </View>
     </>)
 }
 
@@ -188,8 +224,8 @@ const styles = StyleSheet.create({
         bottom: 16,
         right: 16,
         position: 'absolute',
-        backgroundColor: "rgb(28, 27, 31)",
-        color: "rgb(28, 27, 31)"
+        backgroundColor: "#1B1C1F",
+        color: "#1B1C1F"
     },
 });
 

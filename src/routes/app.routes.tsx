@@ -6,6 +6,7 @@ import Service from "../pages/service";
 import { FontAwesome5 } from '@expo/vector-icons';
 import AppBarService from "../templates/appBar";
 import CreateService from "../pages/serviceDetail";
+import AppBarBottomSys from "../templates/appBarBottom";
 
 export type BottomNavigationParamsList = {
     home: undefined;
@@ -28,13 +29,15 @@ export default function AppRoutes() {
                 fontSize: 16
             },
             tabBarStyle: {
-                backgroundColor: "rgb(28, 27, 31)",
+                backgroundColor: "#1B1C1F",
                 borderTopLeftRadius: 8,
-                borderTopRightRadius: 8
+                borderTopRightRadius: 8,
             }
 
         }} initialRouteName="home">
-            <Tab.Screen options={{
+            <Tab.Screen  options={{
+                headerShown: true,
+                header: (props) => <AppBarBottomSys  {...props} />,
                 tabBarIcon: ({ color, size }) => (<Entypo name="home" color={color} size={size} />),
                 tabBarLabel: "Home"
             }} name="home" component={Home} navigationKey="home" />
@@ -65,7 +68,7 @@ function ServiceRoutes() {
             header: (props) => <AppBarService  {...props} />,
         }} initialRouteName="serviceList" >
             <Stack.Screen options={{
-                title: "Serviço",
+                title: "Lista de serviços",
                 headerBackVisible: false,
             }} name="serviceList" component={Service} />
             <Stack.Screen options={{

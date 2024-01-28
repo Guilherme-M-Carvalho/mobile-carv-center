@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FieldsProps, HandleDeleteServiceProps, HandleFindByPlateProps, HandleSetAllProps, OnChangeFieldsProps, OnChangeFieldsServiceDetailProps, OnDeleteImgProps, OnDeleteServiceImgProps, PickImageServiceProps } from "../../types"
+import { FieldsProps, HandleDeleteServiceProps, HandleFindByPlateProps, HandleSetAllProps, HandlleAddPartsProps, HandlleDeletePartsProps, OnChangeFieldsProps, OnChangeFieldsServiceDetailProps, OnChangePartsListProps, OnChangeTypeServiceProps, OnDeleteImgProps, OnDeleteServiceImgProps, PickImageServiceProps } from "../../types"
 import * as ImagePicker from 'expo-image-picker';
 
 export default function useFields() {
@@ -26,9 +26,31 @@ export default function useFields() {
                 helperText: "",
                 value: ""
             },
-            images: []
+            parts: {
+                error: false,
+                helperText: "",
+                value: ""
+            },
+            obs: {
+                error: false,
+                helperText: "",
+                value: ""
+            },
+            images: [],
+            typeService: 0,
+            customerParts: true
         }],
-        images: []
+        images: [],
+        name: {
+            error: false,
+            helperText: "",
+            value: ""
+        },
+        phone: {
+            error: false,
+            helperText: "",
+            value: ""
+        }
     })
 
     const onChangeField: OnChangeFieldsProps = ({ field, value }) => {
@@ -72,6 +94,22 @@ export default function useFields() {
             })
         }
     };
+
+    const valueTypeService = (value: number) => {
+        let valueText = "N/A"
+        switch (value) {
+            case 1:
+                valueText = "Troca de oleo"
+                return valueText
+            case 2:
+                valueText = "Alinhamento"
+                return valueText
+
+            default:
+                valueText = "N/A"
+                return valueText
+        }
+    }
 
     const pickImageService: PickImageServiceProps = async ({ index, before }) => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -126,7 +164,19 @@ export default function useFields() {
                     error: false,
                     helperText: "",
                     value: ""
-                }
+                },
+                parts: {
+                    error: false,
+                    helperText: "",
+                    value: ""
+                },
+                obs: {
+                    error: false,
+                    helperText: "",
+                    value: ""
+                },
+                typeService: 0,
+                customerParts: true
             })
             return {
                 ...obj
@@ -157,9 +207,111 @@ export default function useFields() {
         setFields({ ...fields })
     }
 
-    const total = fields.serviceDetail.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
+    const handleTypeService: OnChangeTypeServiceProps = ({ index, value }) => {
+        setFields(obj => {
+
+            obj.serviceDetail[index].typeService = value
+
+            return {
+                ...obj
+            }
+        })
+    }
+
+    const toggleCustomerParts = (index: number) => {
+        setFields(obj => {
+            obj.serviceDetail[index].customerParts = !obj.serviceDetail[index].customerParts
+            return {
+                ...obj
+            }
+        })
+    }
+
+    const toggleDelete = (index: number) => {
+        setFields(obj => {
+            obj.serviceDetail[index].pressDelete = !obj.serviceDetail[index].pressDelete
+            return {
+                ...obj
+            }
+        })
+    }
+
+    const changePartsList: OnChangePartsListProps = ({ field, index, value, i }) => {
+        setFields(obj => {
+            const partsList = obj.serviceDetail[index]?.partsList
+            if (partsList !== undefined) {
+                partsList[i][field].value = value
+            }
+            obj.serviceDetail[index].partsList = partsList
+            return {
+                ...obj
+            }
+        })
+    }
+
+    const handleAddParts: HandlleAddPartsProps = ({ price, parts: partsValue, index }) => {
+        setFields(obj => {
+            let parts = obj.serviceDetail[index].partsList
+            if (parts) {
+                parts.push({
+                    part: {
+                        error: false,
+                        helperText: "",
+                        value: partsValue
+                    },
+                    price: {
+                        error: false,
+                        helperText: "",
+                        value: price
+                    }
+                })
+            } else {
+                parts = [{
+                    part: {
+                        error: false,
+                        helperText: "",
+                        value: partsValue
+                    },
+                    price: {
+                        error: false,
+                        helperText: "",
+                        value: price
+                    }
+                }]
+            }
+            obj.serviceDetail[index].partsList = parts
+            return {
+                ...obj
+            }
+        })
+    }
+
+    const deletePartsList: HandlleDeletePartsProps = ({ index, i }) => {
+        setFields(obj => {
+            const parts = obj.serviceDetail[index].partsList
+            if (parts) {
+                parts[i].deleted = true
+            }
+            obj.serviceDetail[index].partsList = parts
+            return {
+                ...obj
+            }
+        })
+    }
+
+    let partPrice = 0
+    const serviceDetail = fields.serviceDetail.filter(el => el?.partsList?.length)
+    serviceDetail.forEach(el => {
+        if(el.partsList){
+            partPrice += el?.partsList?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
+        }
+    })
+
+    const total = fields.serviceDetail.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0) + partPrice;
 
     return {
+        deletePartsList,
+        changePartsList,
         handleSetAllFields,
         handleFindByPlate,
         handleAddService,
@@ -170,6 +322,11 @@ export default function useFields() {
         onChangeFieldServiceDetail,
         pickImage,
         handleDeleteService,
+        handleTypeService,
+        valueTypeService,
+        toggleCustomerParts,
+        toggleDelete,
+        handleAddParts,
         fields,
         total
     }

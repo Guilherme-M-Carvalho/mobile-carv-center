@@ -18,7 +18,7 @@ export default function Input({
             <TextInput
                 mode="outlined"
                 outlineColor="rgb(142, 142, 143)"
-                activeOutlineColor="rgb(28, 27, 31)"
+                activeOutlineColor="#1B1C1F"
                 error={error}
                 style={{
                     backgroundColor: "transparent",
