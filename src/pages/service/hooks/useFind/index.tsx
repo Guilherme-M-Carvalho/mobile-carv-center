@@ -12,7 +12,21 @@ export default function useFind() {
         showLoading()
         try {
             const { data } = await api.get("/service")
-            setData(data)
+            const res = data?.map((el: any) =>{
+
+                return {
+                    ...el,
+                    createdAt: new Intl.DateTimeFormat('pt-BR', {
+                        dateStyle: 'short',
+                        timeStyle: 'medium',
+                    }).format(new Date(el?.createdAt)),
+                    updatedAt: new Intl.DateTimeFormat('pt-BR', {
+                        dateStyle: 'short',
+                        timeStyle: 'medium',
+                    }).format(new Date(el?.updatedAt)),
+                }
+            })
+            setData(res)
         } catch (error) {
             console.log({
                 error

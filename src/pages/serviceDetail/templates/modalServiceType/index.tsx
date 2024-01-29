@@ -40,7 +40,7 @@ export default function ModalServiceType({ visible, hideModal, index }: { visibl
                 }}
             />
             <Checkbox.Item
-                label="Troca de oleo"
+                label="Troca de óleo"
                 color="#1c1b1f"
                 status={typeService === 1 ? 'checked' : "unchecked"}
                 onPress={() => {
@@ -63,6 +63,34 @@ export default function ModalServiceType({ visible, hideModal, index }: { visibl
                         handleTypeService({
                             index,
                             value: 2
+                        })
+                        hideModal()
+                    }
+                }}
+            />
+            <Checkbox.Item
+                label="Balanceamento"
+                color="#1c1b1f"
+                status={typeService === 3 ? 'checked' : "unchecked"}
+                onPress={() => {
+                    if (typeService != 3) {
+                        handleTypeService({
+                            index,
+                            value: 3
+                        })
+                        hideModal()
+                    }
+                }}
+            />
+            <Checkbox.Item
+                label="Cambagem"
+                color="#1c1b1f"
+                status={typeService === 4 ? 'checked' : "unchecked"}
+                onPress={() => {
+                    if (typeService != 4) {
+                        handleTypeService({
+                            index,
+                            value: 4
                         })
                         hideModal()
                     }

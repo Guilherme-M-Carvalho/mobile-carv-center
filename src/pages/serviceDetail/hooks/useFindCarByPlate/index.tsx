@@ -19,7 +19,18 @@ export default function useFindCarByPlate(){
                             id: el?.id,
                             uri: el?.name
                         }
-                    })
+                    }),
+                    name: data?.client?.name,
+                    phone: data?.client?.phone,
+                    idClient: data?.client?.id,
+                })
+            } else {
+                handleFindByPlate({
+                    description: fields.description.value,
+                    images: [],
+                    name: fields.name.value,
+                    phone: fields.phone.value,
+                    idClient: undefined,
                 })
             }
             

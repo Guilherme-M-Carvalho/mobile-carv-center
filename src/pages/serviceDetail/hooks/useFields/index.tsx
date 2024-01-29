@@ -99,10 +99,16 @@ export default function useFields() {
         let valueText = "N/A"
         switch (value) {
             case 1:
-                valueText = "Troca de oleo"
+                valueText = "Troca de óleo"
                 return valueText
             case 2:
                 valueText = "Alinhamento"
+                return valueText
+            case 3:
+                valueText = "Balanceamento"
+                return valueText
+            case 4:
+                valueText = "Cambagem"
                 return valueText
 
             default:
@@ -136,7 +142,11 @@ export default function useFields() {
 
     const onDeleteImg: OnDeleteImgProps = ({ i }) => {
         setFields(obj => {
-            obj.images[i].deleted = true
+            if (obj.images[i].id) {
+                obj.images[i].deleted = true
+            } else {
+                obj.images.splice(i, 1)
+            }
             return {
                 ...obj
             }
@@ -144,7 +154,11 @@ export default function useFields() {
     }
     const onDeleteServiceImg: OnDeleteServiceImgProps = ({ index, i }) => {
         setFields(obj => {
-            obj.serviceDetail[index].images[i].deleted = true
+            if (obj.serviceDetail[index].images[i].id) {
+                obj.serviceDetail[index].images[i].deleted = true
+            } else {
+                obj.serviceDetail[index].images.splice(i, 1)
+            }
             return {
                 ...obj
             }
@@ -186,17 +200,24 @@ export default function useFields() {
 
     const handleDeleteService: HandleDeleteServiceProps = ({ index }) => {
         setFields(obj => {
-            obj.serviceDetail[index].deleted = true
+            if (obj.serviceDetail[index].id) {
+                obj.serviceDetail[index].deleted = true
+            } else {
+                obj.serviceDetail.splice(index, 1)
+            }
             return {
                 ...obj
             }
         })
     }
 
-    const handleFindByPlate: HandleFindByPlateProps = ({ description, images }) => {
+    const handleFindByPlate: HandleFindByPlateProps = ({ description, images, name, phone, idClient }) => {
         setFields(obj => {
             obj.description.value = description
             obj.images = images
+            obj.idClient = idClient
+            obj.name.value = name
+            obj.phone.value = phone
             return {
                 ...obj
             }
@@ -240,6 +261,7 @@ export default function useFields() {
         setFields(obj => {
             const partsList = obj.serviceDetail[index]?.partsList
             if (partsList !== undefined) {
+                partsList[i][field].error = false
                 partsList[i][field].value = value
             }
             obj.serviceDetail[index].partsList = partsList
@@ -290,7 +312,11 @@ export default function useFields() {
         setFields(obj => {
             const parts = obj.serviceDetail[index].partsList
             if (parts) {
-                parts[i].deleted = true
+                if (parts[i].id) {
+                    parts[i].deleted = true
+                } else {
+                    parts.splice(i, 1)
+                }
             }
             obj.serviceDetail[index].partsList = parts
             return {
@@ -300,14 +326,17 @@ export default function useFields() {
     }
 
     let partPrice = 0
-    const serviceDetail = fields.serviceDetail.filter(el => el?.partsList?.length)
+    const serviceFilter = fields.serviceDetail.filter(el => !el.deleted)
+    const serviceDetail = serviceFilter.filter(el => el?.partsList?.length)
     serviceDetail.forEach(el => {
-        if(el.partsList){
-            partPrice += el?.partsList?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
+        if (el.partsList && !el.customerParts) {
+            const parts = el?.partsList?.filter(el => !el.deleted)
+            partPrice += parts?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
         }
     })
 
-    const total = fields.serviceDetail.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0) + partPrice;
+
+    const total = serviceFilter.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0) + partPrice;
 
     return {
         deletePartsList,

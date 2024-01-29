@@ -2,17 +2,36 @@ import { useContext } from "react";
 import { FieldsProps } from "../../types"
 import { FieldsContext } from "../../contexts/fields";
 import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext";
+import { ModalContext } from "../../contexts/modal";
 
-type HandleErrorProps = (props: { field: "description" | "plate" | "price"; position?: number; message: string }) => void
+type HandleErrorProps = (props: { field: "phone" | "name" | "description" | "plate" | "price" | "part"; position?: number; message: string; child?: number }) => void
 
 export default function useFailed() {
 
     const { fields, handleSetAllFields } = useContext(FieldsContext)
     const { showAlert } = useContext(GlobalAlertContext)
+    const { showModalParts } = useContext(ModalContext)
 
-    const handleError: HandleErrorProps = ({ field, message, position }) => {
+    const handleError: HandleErrorProps = ({ field, message, position, child }) => {
         const newFields = { ...fields }
-        if (field === "plate" || field === "description" && position == undefined) {
+        if (field === "part" || field === 'price' && child !== undefined) {
+            if(position === undefined){
+                return
+            }
+            const parts = fields.serviceDetail[position].partsList
+            if(child !== undefined && parts){
+                const fieldNew = {
+                    ...parts[child][field],
+                    ...setMessage({ message })
+                }
+                parts[child][field] = fieldNew
+                newFields.serviceDetail[position].partsList = parts
+                handleSetAllFields(newFields)
+                showModalParts(position)
+            }
+            return
+        }
+        if (field === "name" || field === "phone" || field === "plate" || field === "description" && position == undefined) {
 
             const fieldNew = {
                 ...fields[field],
@@ -34,7 +53,7 @@ export default function useFailed() {
     }
 
     const setMessage = ({ message }: { message: string }) => {
-        showAlert({text: message, type: "error"})
+        showAlert({ text: message, type: "error" })
         return {
             error: true,
             helperText: message

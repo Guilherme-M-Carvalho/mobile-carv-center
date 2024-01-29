@@ -55,22 +55,22 @@ const Screen = () => {
                     width: "80%",
                 }}>
 
-                <Searchbar
-                    placeholder="Buscar"
-                    onChangeText={setSearchQuery}
-                    value={searchQuery}
-                    iconColor='#1B1C1F'
-                    placeholderTextColor={"#1B1C1F"}
-                    inputStyle={{
-                        color: "#1B1C1F"
-                    }}
-                    onLayout={(e) => {
-                        const { height } = e.nativeEvent.layout
-                    }}
-                    style={{
-                        backgroundColor: "#fff",
-                    }}
-                />
+                    <Searchbar
+                        placeholder="Buscar"
+                        onChangeText={setSearchQuery}
+                        value={searchQuery}
+                        iconColor='#1B1C1F'
+                        placeholderTextColor={"#1B1C1F"}
+                        inputStyle={{
+                            color: "#1B1C1F"
+                        }}
+                        onLayout={(e) => {
+                            const { height } = e.nativeEvent.layout
+                        }}
+                        style={{
+                            backgroundColor: "#fff",
+                        }}
+                    />
                 </View>
 
             </View>
@@ -171,6 +171,43 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "600"
+                        }}>Manutenções: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{service?.subTitle}</Text>
+
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
+                        }}>Cliente: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{service?.name}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
+                        }}>Contato: </Text>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "400"
+                        }}>{service?.phone}</Text>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={{
+                            fontSize: 14,
+                            color: "#1B1C1F",
+                            fontWeight: "600"
                         }}>Total: </Text>
                         <Text style={{
                             fontSize: 14,
@@ -188,10 +225,7 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{new Intl.DateTimeFormat('pt-BR', {
-                            dateStyle: 'short',
-                            timeStyle: 'medium',
-                        }).format(new Date(service?.createdAt))}</Text>
+                        }}>{service?.createdAt}</Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <Text style={{
@@ -203,11 +237,7 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{new Intl.DateTimeFormat('pt-BR', {
-                            dateStyle: 'short',
-                            timeStyle: 'medium',
-                            timeZone: 'GMT'
-                        }).format(new Date(service?.updatedAt))}</Text>
+                        }}>{service?.updatedAt}</Text>
                     </View>
 
 

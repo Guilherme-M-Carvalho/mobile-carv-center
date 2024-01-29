@@ -7,7 +7,7 @@ import { Icon, Badge, IconButton } from 'react-native-paper';
 import { Chip } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useFind from './hooks/useFind'
-import { VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from 'victory-native'
+// import { VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from 'victory-native'
 import SubTitle from '../../components/subTitle'
 import useFindReport from './hooks/useFindReport'
 
@@ -209,7 +209,7 @@ export default function Home() {
               dateStyle: 'medium',
             }).format(dateReport?.end ? dateReport?.end : new Date())}</Text>} />
           </View>
-          <VictoryChart
+          {/* <VictoryChart
             theme={VictoryTheme.material}
             containerComponent={<VictoryVoronoiContainer
               voronoiDimension="x"
@@ -243,7 +243,7 @@ export default function Home() {
               // }}
               data={report}
             />
-          </VictoryChart>
+          </VictoryChart> */}
         </ScrollView>
       </View>
       {visibleDate &&

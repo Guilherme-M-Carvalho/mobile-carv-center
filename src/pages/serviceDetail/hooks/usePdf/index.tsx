@@ -2,8 +2,6 @@ import { useContext } from "react";
 import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext";
 import { api } from "../../../../services/api";
 import { FieldsContext } from "../../contexts/fields";
-// import Share from 'react-native-share';
-import { Buffer } from 'buffer'
 import { apiUrl } from "../../../../services/apiUrl";
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';

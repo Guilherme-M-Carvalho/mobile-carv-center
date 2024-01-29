@@ -24,6 +24,7 @@ export type FieldsContextProps = {
 
 export type FieldsProps = {
     id?: number
+    idClient?: number;
     name: InputProps
     phone: InputProps
     description: InputProps
@@ -46,6 +47,7 @@ export type ServiceDetailProps = {
     customerParts: boolean;
     pressDelete?: boolean;
     partsList?: PartsProps[]
+    date?: Date
 }
 
 export type ImageProps = {
@@ -58,17 +60,19 @@ export type ImageProps = {
 export enum TypeService {
     na = 0,
     oil = 1,
-    align = 2
+    align = 2,
+    balancing = 3,
+    camber = 4
 }
 
 export type HandleSetAllProps = (fields: FieldsProps) => void
-export type HandleFindByPlateProps = ({ description, images }: { description: string; images: ImageProps[] }) => void
+export type HandleFindByPlateProps = ({ description, images, name, phone, idClient }: { description: string; images: ImageProps[]; idClient?: number; name: string; phone: string; }) => void
 export type HandleDeleteServiceProps = ({ index }: { index: number }) => void
 export type OnDeleteImgProps = ({ i }: { i: number }) => void
 export type OnDeleteServiceImgProps = ({ index, i }: { i: number; index: number }) => void
 export type PickImageServiceProps = ({ index }: { index: number; before?: boolean; }) => void
-export type OnChangeFieldsProps = ({ field, value }: { value: any; field: keyof (Omit<FieldsProps, "id" | "serviceDetail" | "images" | "createdAt" | "updatedAt">) }) => void
-export type OnChangeFieldsServiceDetailProps = ({ field, value, index }: { index: number; value: any; field: keyof (Omit<ServiceDetailProps, "partsList" | "pressDelete" | "id" | "before" | "images" | "deleted" | "typeService" | "customerParts">) }) => void
+export type OnChangeFieldsProps = ({ field, value }: { value: any; field: keyof (Omit<FieldsProps, "idClient" | "id" | "serviceDetail" | "images" | "createdAt" | "updatedAt">) }) => void
+export type OnChangeFieldsServiceDetailProps = ({ field, value, index }: { index: number; value: any; field: keyof (Omit<ServiceDetailProps, "date" | "partsList" | "pressDelete" | "id" | "before" | "images" | "deleted" | "typeService" | "customerParts">) }) => void
 export type OnChangeTypeServiceProps = (props: {value: TypeService, index: number}) => void
 export type OnChangePartsListProps  = (props: {value: any, field: keyof(Omit<PartsProps, "id" | "deleted">); index: number; i: number}) => void
 export type HandlleAddPartsProps = (props: {index: number; parts: any; price: any}) => void

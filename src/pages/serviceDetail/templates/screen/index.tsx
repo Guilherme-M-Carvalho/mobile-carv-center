@@ -50,7 +50,6 @@ export default function Screen() {
                 backgroundColor: "#1c1b1f",
                 height: fields.id ? 50 : 30,
             }} />
-            {/* {fields.id && */}
             <View style={{
                 backgroundColor: "#ffffff",
                 position: "absolute",
@@ -149,6 +148,7 @@ export default function Screen() {
                     <Input
                         {...fields.name}
                         label={"Nome"}
+                        disabled={(!!fields.id || !!fields.idClient)}
                         onChangeText={value => onChangeField({ value, field: "name" })}
                     />
                     <Input
@@ -156,6 +156,7 @@ export default function Screen() {
                         label={"Telefone"}
                         keyboardType="numeric"
                         maxLength={11}
+                        disabled={(!!fields.id || !!fields.idClient)}
                         onChangeText={value => onChangeField({ value, field: "phone" })}
                     />
                     <Input
@@ -227,7 +228,7 @@ export default function Screen() {
 }
 
 
-function Service({ description, index, price, images, typeService, parts, obs, customerParts, pressDelete, partsList
+function Service({ description, index, price, images, typeService, parts, obs, customerParts, pressDelete, partsList, date
 }: ServiceDetailProps & { index: number }) {
 
     const { fields, onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService, valueTypeService, toggleCustomerParts, toggleDelete } = useContext(FieldsContext)
@@ -235,7 +236,7 @@ function Service({ description, index, price, images, typeService, parts, obs, c
     const naSelected = typeService === 0
     const partsListsFilter = partsList?.filter(el => !el.deleted)
     const totalParts = partsListsFilter?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0)
-    const descriptionAccordion = Number(price.value) + Number(parts.value) + (totalParts ? totalParts : 0)
+    const descriptionAccordion = Number(price.value) + Number(parts.value) + (totalParts && !customerParts ? totalParts : 0)
 
 
 
@@ -250,12 +251,12 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                     borderRadius: 8
                 })
             }}>
-                {pressDelete && fields.serviceDetail.length > 1 ?
-                    <IconButton icon={"close"} iconColor="#000" onPress={() => toggleDelete(index)} />
-                    : null}
                 {pressDelete &&
-                    <IconButton icon={"delete"} iconColor="#ff0000" onPress={() => handleDeleteService({ index })} />
+                    <IconButton icon={"close"} iconColor="#000" onPress={() => toggleDelete(index)} />
                 }
+                {pressDelete && fields.serviceDetail.length > 1 ?
+                    <IconButton icon={"delete"} iconColor="#ff0000" onPress={() => handleDeleteService({ index })} />
+                    : null}
                 <View style={{
                     backgroundColor: "#ffffff",
                     shadowColor: '#171717',
@@ -281,7 +282,11 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                             toggleDelete(index)
                         }}
                         title={`Manutenção ${index + 1}`}
-                        description={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(descriptionAccordion)}
+                        description={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(descriptionAccordion)}${fields.id && date ? " - " + new Intl.DateTimeFormat('pt-BR', {
+                            dateStyle: 'short',
+                            timeStyle: 'medium',
+                            timeZone: 'GMT'
+                        }).format(date) : ""}`}
                     >
                         <View style={{
                             gap: 8
@@ -467,7 +472,7 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                                             width: "100%"
                                         }}
                                         {...parts}
-                                        value={totalParts ? String(totalParts) :"0"}
+                                        value={totalParts ? String(totalParts) : "0"}
                                         disabled={true}
                                         label={"Peças"}
                                         left={<TextInput.Affix text="R$" />}

@@ -23,17 +23,18 @@ export default function useSave() {
         try {
             const { data } = await api({
                 url: "/service" + (fields.id ? `/${fields.id}`: "") , data: dados, method: fields.id ? "put" : "post", 
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                }
+                // headers: {
+                //     Accept: 'application/json',
+                //     'Content-Type': 'multipart/form-data',
+                // }
             })
             
             if (data.failed) {
                 handleError({
                     field: data?.field,
                     message: data?.message,
-                    position: data?.position
+                    position: data?.position,
+                    child: data?.child
                 })
             } else {
                 showAlert({ text: fields.id ? "Serviço editado com sucesso!" : "Serviço cadastrado com sucesso!", type: "success" })
