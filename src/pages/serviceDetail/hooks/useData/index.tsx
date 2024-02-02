@@ -74,46 +74,46 @@ export default function useData(fields: FieldsProps) {
         formData.append("serviceDetail", JSON.stringify(data.serviceDetail))
         await Promise.all(fields.images.map(async (img) => {
             if (!img.id && !img.deleted) {
-                // formData.append("vehicle", {
-                //     uri: img.uri,
-                //     type: 'image/jpeg',
-                //     name: 'profile-picture'
-                // })
-                await fetch(img.uri)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const file = new File([blob], "file.png", { type: "image/png" })
-                        // console.log({
-                        //     uri: img.uri,
-                        //     type: 'image/jpeg',
-                        //     name: 'profile-picture'
-                        // });
+                formData.append("vehicle", {
+                    uri: img.uri,
+                    type: 'image/jpeg',
+                    name: 'profile-picture'
+                })
+                // await fetch(img.uri)
+                //     .then(res => res.blob())
+                //     .then(blob => {
+                //         const file = new File([blob], "file.png", { type: "image/png" })
+                //         // console.log({
+                //         //     uri: img.uri,
+                //         //     type: 'image/jpeg',
+                //         //     name: 'profile-picture'
+                //         // });
 
-                        // formData.append("vehicle", {
-                        //     uri: img.uri,
-                        //     type: 'image/jpeg',
-                        //     name: 'profile-picture'
-                        // })
-                        formData.append("vehicle", file)
+                //         // formData.append("vehicle", {
+                //         //     uri: img.uri,
+                //         //     type: 'image/jpeg',
+                //         //     name: 'profile-picture'
+                //         // })
+                //         formData.append("vehicle", file)
 
-                    })
+                //     })
             }
         }))
         await Promise.all(fields.serviceDetail.map(async ({ images }, index) => {
             await Promise.all(images.map(async (img) => {
                 if (!img.id && !img.deleted) {
-                    // formData.append("service", {
-                    //     uri: img.uri,
-                    //     type: 'image/jpeg',
-                    //     name: 'profile-picture',
-                    // })
-                    await fetch(img.uri)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            const file = new File([blob], "file.png", { type: "image/png" })
+                    formData.append("service", {
+                        uri: img.uri,
+                        type: 'image/jpeg',
+                        name: 'profile-picture',
+                    })
+                    // await fetch(img.uri)
+                    //     .then(res => res.blob())
+                    //     .then(blob => {
+                    //         const file = new File([blob], "file.png", { type: "image/png" })
 
-                            formData.append("service", file)
-                        })
+                    //         formData.append("service", file)
+                    //     })
                 }
             }))
         }))

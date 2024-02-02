@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Checkbox, Divider, IconButton, Modal, Text, TextInput } from "react-native-paper";
+import { Divider, IconButton, Modal, Text, TextInput } from "react-native-paper";
 import { FieldsContext } from "../../contexts/fields";
 import { ScrollView, View } from "react-native";
 import Input from "../../../../components/input";

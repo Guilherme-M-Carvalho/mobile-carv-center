@@ -39,63 +39,26 @@ export default function ModalServiceType({ visible, hideModal, index }: { visibl
                     }
                 }}
             />
-            <Checkbox.Item
-                label="Troca de óleo"
-                color="#1c1b1f"
-                status={typeService === 1 ? 'checked' : "unchecked"}
-                onPress={() => {
-                    if (typeService != 1) {
-                        handleTypeService({
-                            index,
-                            value: 1
-                        })
-                        hideModal()
+            {fields.typeService.map((type, i) => (
+                <Checkbox.Item
+                    key={i}
+                    label={type.description}
+                    color="#1c1b1f"
+                    status={typeService == type?.id ? 'checked' : "unchecked"}
+                    onPress={() => {
+                        if (typeService != type?.id) {
+                            handleTypeService({
+                                index,
+                                value: Number(type?.id)
+                            })
+                            hideModal()
 
-                    }
-                }}
-            />
-            <Checkbox.Item
-                label="Alinhamento"
-                color="#1c1b1f"
-                status={typeService === 2 ? 'checked' : "unchecked"}
-                onPress={() => {
-                    if (typeService != 2) {
-                        handleTypeService({
-                            index,
-                            value: 2
-                        })
-                        hideModal()
-                    }
-                }}
-            />
-            <Checkbox.Item
-                label="Balanceamento"
-                color="#1c1b1f"
-                status={typeService === 3 ? 'checked' : "unchecked"}
-                onPress={() => {
-                    if (typeService != 3) {
-                        handleTypeService({
-                            index,
-                            value: 3
-                        })
-                        hideModal()
-                    }
-                }}
-            />
-            <Checkbox.Item
-                label="Cambagem"
-                color="#1c1b1f"
-                status={typeService === 4 ? 'checked' : "unchecked"}
-                onPress={() => {
-                    if (typeService != 4) {
-                        handleTypeService({
-                            index,
-                            value: 4
-                        })
-                        hideModal()
-                    }
-                }}
-            />
+                        } else {
+                            hideModal()
+                        }
+                    }}
+                />
+            ))}
         </ScrollView>
 
     </Modal>

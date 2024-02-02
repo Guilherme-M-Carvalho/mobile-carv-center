@@ -1,8 +1,9 @@
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { AnimatedFAB, List, Searchbar } from 'react-native-paper';
-import { StackParamsList } from '../../../../routes/app.routes';
+import { AnimatedFAB, Divider, Icon, List, MD3Colors, Searchbar } from 'react-native-paper';
+import { CostStackParamsList, StackParamsList } from '../../../../routes/app.routes';
+import SubTitle from '../../../../components/subTitle';
 import useFind from '../../hooks/useFind';
 import { useEffect, useState } from 'react';
 import { Avatar } from 'react-native-paper';
@@ -12,10 +13,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const Screen = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
+    const navigation = useNavigation<NativeStackNavigationProp<CostStackParamsList>>()
     const { handleFind, data } = useFind()
     const isFocused = useIsFocused();
-
 
     useEffect(() => {
         if (isFocused)
@@ -106,7 +106,7 @@ const Screen = () => {
                 icon={'plus'}
                 label={'Label'}
                 extended={false}
-                onPress={() => navigation.navigate('createService')}
+                onPress={() => navigation.navigate('createCost')}
                 visible={true}
                 animateFrom={'right'}
                 iconMode={'static'}
@@ -119,7 +119,7 @@ const Screen = () => {
 };
 
 function Service({ service }: any) {
-    const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
+    const navigation = useNavigation<NativeStackNavigationProp<CostStackParamsList>>()
 
     return (<>
         <View style={{
@@ -133,8 +133,8 @@ function Service({ service }: any) {
             borderRadius: 8,
         }}>
             <List.Accordion
-                onLongPress={() => { navigation.navigate('editarService', { id: service.id }) }}
-                description={service?.subTitle}
+                onLongPress={() => { navigation.navigate('editarCost', { id: service.id }) }}
+                description={service?.description}
                 titleStyle={{
                     color: "#1B1C1F"
                 }}
@@ -144,19 +144,18 @@ function Service({ service }: any) {
                     paddingVertical: 0,
                     backgroundColor: "#fff",
                 }}
-                left={() => service?.image ? <Avatar.Image
-                    size={50}
-                    source={{ uri: `${apiUrl}/files/${service.image}` }}
-                    style={{ backgroundColor: "#1B1C1F" }}
-                />
-                    : <Avatar.Icon
+                left={() =>  <Avatar.Icon
                         size={50}
                         style={{ backgroundColor: "#1B1C1F" }}
-                        icon={() => <FontAwesome5 name="car" color={"#fff"} size={24} />}
+                        icon={() => <Icon
+                            source="currency-usd"
+                            color={"#fff"}
+                            size={24}
+                          />}
                         color='#fff'
                     />
                 }
-                title={service?.title}
+                title={service?.name}
             >
                 <View style={{
                     // marginHorizontal: 8,
@@ -170,20 +169,7 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "600"
-                        }}>Manutenções: </Text>
-                        <Text style={{
-                            fontSize: 14,
-                            color: "#1B1C1F",
-                            fontWeight: "400"
-                        }}>{service?.subTitle}</Text>
-
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <Text style={{
-                            fontSize: 14,
-                            color: "#1B1C1F",
-                            fontWeight: "600"
-                        }}>Cliente: </Text>
+                        }}>Produto: </Text>
                         <Text style={{
                             fontSize: 14,
                             color: "#1B1C1F",
@@ -195,19 +181,19 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "600"
-                        }}>Contato: </Text>
+                        }}>Descrição: </Text>
                         <Text style={{
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{service?.phone}</Text>
+                        }}>{service?.description}</Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <Text style={{
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "600"
-                        }}>Total: </Text>
+                        }}>Preço: </Text>
                         <Text style={{
                             fontSize: 14,
                             color: "#1B1C1F",

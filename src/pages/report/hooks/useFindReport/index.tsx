@@ -1,11 +1,18 @@
 import { useContext, useState } from "react"
 import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext"
 import { api } from "../../../../services/api"
+import { ReportProps } from "../../types"
 
 export default function useFindReport() {
 
     const { showLoading, hideLoading } = useContext(GlobalAlertContext)
-    const [report, setReport] = useState<{qtd: number; y: number; x: string}[][]>([])
+    const [report, setReport] = useState<ReportProps>({
+        chart: [],
+        totalCost: 0,
+        totalLiquid: 0,
+        totalPart: 0,
+        totalProfit: 0
+    })
 
     const handleFindReport = async ({ start, end }: { start: Date, end: Date }) => {
         showLoading()
@@ -17,8 +24,6 @@ export default function useFindReport() {
                 start: dateString,
                 end: dateEndString
             } })
-            const res: {qtd: number; y: number; x: string}[] = Array.isArray(data) ? data : []
-            // res.unshift({x: "", qtd:0, y: 0})
             setReport(data)
         } catch (error) {
 

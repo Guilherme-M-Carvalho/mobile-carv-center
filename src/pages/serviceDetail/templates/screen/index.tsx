@@ -1,17 +1,17 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { Card, Divider, IconButton, TextInput, Checkbox, Button, List } from "react-native-paper";
-import { LinearGradient } from 'expo-linear-gradient';
+import { ScrollView, Text, View } from "react-native";
+import { Card, IconButton, TextInput, Checkbox, Button, List } from "react-native-paper";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import SubTitle from "../../../../components/subTitle";
 import Input from "../../../../components/input";
 import { useContext, useEffect } from "react";
 import { FieldsContext } from "../../contexts/fields";
-import { ServiceDetailProps } from "../../types";
+import { FieldsProps, ServiceDetailProps } from "../../types";
 import Actions from "../actions";
 import useFindCarByPlate from "../../hooks/useFindCarByPlate";
 import useFind from "../../hooks/useFind";
 import { apiUrl } from "../../../../services/apiUrl";
 import { ModalContext } from "../../contexts/modal";
+import useFindTypeService from "../../hooks/useFindTypeService";
 
 type ServiceDetailRProps = {
     editarService: {
@@ -24,14 +24,25 @@ type ServiceDetailRouteProps = RouteProp<ServiceDetailRProps, 'editarService'>
 export default function Screen() {
 
     const route = useRoute<ServiceDetailRouteProps>()
-    const { onChangeField, fields, pickImage, onDeleteImg, total } = useContext(FieldsContext)
+    const { onChangeField, fields, pickImage, onDeleteImg, total, handleSetAllFields } = useContext(FieldsContext)
     const { handleFind } = useFindCarByPlate()
     const { handleFind: handleFindService } = useFind()
+    const { handleFindTypeService } = useFindTypeService()
+
     useEffect(() => {
         if (!!route.params?.id) {
             handleFindService({
                 id: route.params.id
             })
+        } else {
+            (async() => {
+                const typeService = await handleFindTypeService()
+                const newFields: FieldsProps = {
+                    ...fields,
+                    typeService: typeService
+                }
+                handleSetAllFields(newFields)
+            })()
         }
     }, [])
     return (<View style={{
@@ -285,7 +296,6 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                         description={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(descriptionAccordion)}${fields.id && date ? " - " + new Intl.DateTimeFormat('pt-BR', {
                             dateStyle: 'short',
                             timeStyle: 'medium',
-                            timeZone: 'GMT'
                         }).format(date) : ""}`}
                     >
                         <View style={{
@@ -454,9 +464,6 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                                     flex: 1,
                                 }}>
                                     <Input
-                                        style={{
-                                            width: "100%"
-                                        }}
                                         {...price}
                                         label={"Mão de obra"}
                                         keyboardType="numeric"
@@ -468,9 +475,6 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                                     flex: 1
                                 }}>
                                     <Input
-                                        style={{
-                                            width: "100%"
-                                        }}
                                         {...parts}
                                         value={totalParts ? String(totalParts) : "0"}
                                         disabled={true}

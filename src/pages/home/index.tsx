@@ -7,7 +7,7 @@ import { Icon, Badge, IconButton } from 'react-native-paper';
 import { Chip } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useFind from './hooks/useFind'
-// import { VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from 'victory-native'
+import { VictoryChart, VictoryGroup, VictoryLabel, VictoryLegend, VictoryBar, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer, VictoryLine } from 'victory-native'
 import SubTitle from '../../components/subTitle'
 import useFindReport from './hooks/useFindReport'
 
@@ -54,7 +54,7 @@ export default function Home() {
         <View style={{
           width: "100%",
           backgroundColor: "#1c1b1f",
-          height: 75
+          height: 75,
         }} />
         <View style={{
           backgroundColor: "#ffffff",
@@ -209,41 +209,7 @@ export default function Home() {
               dateStyle: 'medium',
             }).format(dateReport?.end ? dateReport?.end : new Date())}</Text>} />
           </View>
-          {/* <VictoryChart
-            theme={VictoryTheme.material}
-            containerComponent={<VictoryVoronoiContainer
-              voronoiDimension="x"
-              labels={(d: any) => {return `${d?.datum?.qtd} Vendas\n${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(d?.datum?.y)}`}}
-              labelComponent={
-                  <VictoryTooltip
-                      cornerRadius={0}
-                      flyoutStyle={{
-                          stroke: '#C0AB8E',
-                          fill: '#F0EDE5',
-                      }}
-                      width={400}
-                      renderInPortal={true}
-                  />
-              }
-          />}
-            style={{
-              
 
-            }} minDomain={{ y: 0, x: 0 }}
-          >
-            <VictoryLine
-
-              style={{
-                data: { stroke: "#171717" },
-                parent: { border: "1px solid #ccc" },
-
-              }}
-              // labels={(el: any) => {
-              //   return `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(el?.datum?.y)}`
-              // }}
-              data={report}
-            />
-          </VictoryChart> */}
         </ScrollView>
       </View>
       {visibleDate &&

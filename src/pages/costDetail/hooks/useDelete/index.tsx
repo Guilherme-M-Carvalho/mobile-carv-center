@@ -5,22 +5,29 @@ import { FieldsContext } from "../../contexts/fields"
 import { useNavigation } from "@react-navigation/native"
 
 export default function useDelete() {
+
+    const { showAlert, hideLoading, showLoading } = useContext(GlobalAlertContext)
     const { fields } = useContext(FieldsContext)
-    const { hideLoading, showLoading, showAlert } = useContext(GlobalAlertContext)
     const navigation = useNavigation()
 
     const handleDelete = async () => {
         showLoading()
-
         try {
-            const { data } = await api({ url: "/service/" + fields.id, method: "delete" })
-            showAlert({ text: "Serviço deletado com sucesso!", type: "success" })
+            const { data } = await api({ method: "delete", url: "/cost/"+fields?.id})
+            if(data?.failed){
+                showAlert({
+                    text: data?.message,
+                    type: "error"
+                })
+            } else {
+                showAlert({
+                    text: "Custo deletado com sucesso!",
+                    type: "success"
+                })
+            }
             navigation.goBack()
-        } catch (error: any) {
-            showAlert({
-                text: error?.response?.data?.error
-                , type: "error"
-            })
+        } catch (error) {
+
         }
         hideLoading()
     }

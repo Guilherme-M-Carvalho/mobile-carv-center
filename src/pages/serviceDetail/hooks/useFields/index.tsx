@@ -50,7 +50,8 @@ export default function useFields() {
             error: false,
             helperText: "",
             value: ""
-        }
+        },
+       typeService: [] 
     })
 
     const onChangeField: OnChangeFieldsProps = ({ field, value }) => {
@@ -96,25 +97,11 @@ export default function useFields() {
     };
 
     const valueTypeService = (value: number) => {
-        let valueText = "N/A"
-        switch (value) {
-            case 1:
-                valueText = "Troca de óleo"
-                return valueText
-            case 2:
-                valueText = "Alinhamento"
-                return valueText
-            case 3:
-                valueText = "Balanceamento"
-                return valueText
-            case 4:
-                valueText = "Cambagem"
-                return valueText
-
-            default:
-                valueText = "N/A"
-                return valueText
+        const type = fields.typeService.find(el => el.id == value)
+        if (type){
+            return type?.description
         }
+        return "N/A"
     }
 
     const pickImageService: PickImageServiceProps = async ({ index, before }) => {
@@ -230,9 +217,7 @@ export default function useFields() {
 
     const handleTypeService: OnChangeTypeServiceProps = ({ index, value }) => {
         setFields(obj => {
-
             obj.serviceDetail[index].typeService = value
-
             return {
                 ...obj
             }

@@ -4,12 +4,15 @@ import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext"
 import { api } from "../../../../services/api"
 import { FieldsProps, ImageProps, PartsProps, ServiceDetailProps } from "../../types"
 import { InputProps } from "../../../../types"
+import useFindTypeService from "../useFindTypeService"
 
 export default function useFind() {
     const { handleSetAllFields } = useContext(FieldsContext)
     const { hideLoading, showLoading, showAlert } = useContext(GlobalAlertContext)
+    const { handleFindTypeService } = useFindTypeService()
 
     const handleFind = async ({ id }: { id: number }) => {
+        const typeService = await handleFindTypeService()
         showLoading()
         try {
             const { data } = await api.get("/service/" + id)
@@ -26,6 +29,7 @@ export default function useFind() {
                     ...input,
                     value: data?.car?.description
                 },
+                typeService: typeService,
                 plate: {
                     ...input,
                     value: data?.car?.plate
