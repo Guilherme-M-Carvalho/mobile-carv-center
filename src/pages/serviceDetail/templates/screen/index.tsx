@@ -226,9 +226,10 @@ export default function Screen() {
                 </View>
 
                 <View style={{
-                    gap: 8,
+                    gap: 16,
                     paddingHorizontal: 8,
                     marginVertical: 8,
+                    marginBottom: 16
                 }}>
                     {fields.serviceDetail.map((service, index) => !service.deleted && (<Service {...service} index={index} key={index} />))}
                 </View>

@@ -11,6 +11,9 @@ import { Icon } from "react-native-paper";
 import Cost from "../pages/cost";
 import CostDetail from "../pages/costDetail";
 import Report from "../pages/report";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import ResaleDetail from "../pages/resaleDetail";
 
 export type BottomNavigationParamsList = {
     home: undefined;
@@ -22,6 +25,7 @@ export type BottomNavigationParamsList = {
 const Tab = createBottomTabNavigator<BottomNavigationParamsList>();
 
 export default function AppRoutes() {
+    const { user } = useContext(AuthContext)
 
     return (
         <Tab.Navigator sceneContainerStyle={{
@@ -45,6 +49,7 @@ export default function AppRoutes() {
                 headerShown: true,
                 header: (props) => <AppBarBottomSys  {...props} />,
                 tabBarIcon: ({ color, size }) => (<Entypo name="home" color={color} size={size} />),
+                title: `Olá, ${user.name}`,
                 tabBarLabel: "Home"
             }} name="home" component={Home} navigationKey="home" />
 
@@ -68,6 +73,7 @@ export default function AppRoutes() {
                     color={color}
                     size={size}
                 />),
+                title: "Relatório",
                 tabBarLabel: "Relatório",
             }} name="report" component={Report} />
         </Tab.Navigator>
@@ -109,7 +115,11 @@ function ServiceRoutes() {
 export type CostStackParamsList = {
     costList: undefined
     createCost: undefined
+    createResale: undefined
     editarCost: {
+        id: number
+    }
+    editarResale: {
         id: number
     }
 }
@@ -124,7 +134,7 @@ function CostRoutes() {
             header: (props) => <AppBarService  {...props} />,
         }} initialRouteName="costList" >
             <CostStack.Screen options={{
-                title: "Lista de custos",
+                title: "Custo",
                 headerBackVisible: false,
             }} name="costList" component={Cost} />
             <CostStack.Screen options={{
@@ -133,6 +143,12 @@ function CostRoutes() {
             <CostStack.Screen options={{
                 title: "Editar custo",
             }} name="editarCost" component={CostDetail} />
+            <CostStack.Screen options={{
+                title: "Criar revenda",
+            }} name="createResale" component={ResaleDetail} />
+            <CostStack.Screen options={{
+                title: "Editar revenda",
+            }} name="editarResale" component={ResaleDetail} />
         </CostStack.Navigator>
     )
 }

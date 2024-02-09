@@ -16,6 +16,11 @@ const Screen = () => {
     const { handleFind, data } = useFind()
     const isFocused = useIsFocused();
 
+    // console.log({
+    //     navigation,
+    //     isFocused
+    // });
+    
 
     useEffect(() => {
         if (isFocused)

@@ -6,6 +6,9 @@ export type FieldsProps = {
     description: InputProps;
     amount: InputProps;
     price: InputProps;
+    priceResale: InputProps;
+    totalResale: number
+    totalSold?: number
 }
 
 export type FieldsContextProps = {
@@ -14,6 +17,6 @@ export type FieldsContextProps = {
     handleSetAllFields: HandleSetAllFieldsProps
 }
 
-export type OnChangeFieldsProps = (props: { value: any; field: keyof (Omit<FieldsProps, "id">) }) => void
+export type OnChangeFieldsProps = (props: { value: any; field: keyof (Omit<FieldsProps, "id" | "totalResale" | "totalSold">) }) => void
 
 export type HandleSetAllFieldsProps = (fields: FieldsProps) => void

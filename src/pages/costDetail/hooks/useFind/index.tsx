@@ -17,23 +17,30 @@ export default function useFind(){
                 amount: {
                     error: false,
                     helperText: "",
-                    value: data?.amount
+                    value: String(Number(data?.amount) - Number(data?.totalSold))
                 },
                 description: {
                     error: false,
                     helperText: "",
-                    value: data?.description
+                    value: String(data?.description)
                 },
                 name: {
                     error: false,
                     helperText: "",
-                    value: data?.name
+                    value: String(data?.name)
                 },
                 price: {
                     error: false,
                     helperText: "",
-                    value: data?.price
+                    value: String(data?.price)
                 },
+                priceResale: {
+                    error: false,
+                    helperText: "",
+                    value: String(data?.priceResale)
+                },
+                totalResale: data?.totalResale,
+                totalSold: data?.totalSold,
                 id: id
             }
 

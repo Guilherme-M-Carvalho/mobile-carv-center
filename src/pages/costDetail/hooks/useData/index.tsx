@@ -9,6 +9,7 @@ export default function useData(fields: FieldsProps){
             description:  fields.description.value,
             price:  fields.price.value,
             amount:  fields.amount.value,
+            priceResale: fields.priceResale.value,
         }
     }
 

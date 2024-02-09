@@ -11,7 +11,8 @@ export default function useFindReport() {
         totalCost: 0,
         totalLiquid: 0,
         totalPart: 0,
-        totalProfit: 0
+        totalProfit: 0,
+        totalResale: 0
     })
 
     const handleFindReport = async ({ start, end }: { start: Date, end: Date }) => {

@@ -4,10 +4,11 @@ import useFindReport from "./hooks/useFindReport";
 import SubTitle from "../../components/subTitle";
 import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { VictoryChart, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from "victory-native";
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryTooltip, VictoryVoronoiContainer } from "victory-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function Report() {
+    
 
     const { handleFindReport, report } = useFindReport()
     const [dateReport, setDateReport] = useState<{ start?: Date; end?: Date; visibleStart: boolean; visibleEnd: boolean }>({ start: new Date(), end: new Date(), visibleEnd: false, visibleStart: false })
@@ -19,7 +20,7 @@ export default function Report() {
         }
     }, [isFocused])
 
-    const colors = ["#2bff00", "#ff0000", "#2b00ff", "#29c9cc"]
+    const colors = ["#2bff00", "#ff0000", "#2b00ff", "#29c9cc","#2bff00"]
 
     return (<View style={{
         backgroundColor: "#fff",
@@ -34,7 +35,7 @@ export default function Report() {
             <View style={{
                 width: "100%",
                 backgroundColor: "#1c1b1f",
-                height: 75,
+                height: 82,
             }} />
             <View style={{
                 backgroundColor: "#ffffff",
@@ -50,169 +51,160 @@ export default function Report() {
                 padding: 8,
                 borderRadius: 8,
                 width: "80%",
-                height: 150,
+                height: 165,
                 flexDirection: "column",
                 justifyContent: "space-between"
             }}>
                 <View style={{
                     flexDirection: "row",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
+                    alignItems: "center"
                 }}>
-                    {/* <Chip icon={() => <Icon
-                        source="calendar-alert"
-                        color={"#000"}
-                        size={18}
-                    />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
-                        fontSize: 10,
-                        fontWeight: "600",
-                        color: "#000"
-                    }}>{new Intl.DateTimeFormat('pt-BR', {
-                        dateStyle: 'medium',
-                    }).format(date ? date : new Date())}</Text>} /> */}
-                    <Chip icon={() => <Icon
-                        source="currency-usd"
-                        color={"#000"}
-                        size={18}
-                    />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
-                        fontSize: 10,
-                        fontWeight: "600",
-                        color: "#000"
-                    }}>Lucro</Text>} />
-                </View>
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                }}>
-                    <View style={{
-                        flexDirection: "row",
-                        gap: 8,
-                        paddingLeft: 8,
-                        alignItems: "center"
-                    }}>
-                        <View style={{ position: "relative" }}>
-                            <Icon
-                                source="cart"
-                                color={"#1B1C1F"}
-                                size={28}
-                            />
-                            {/* <Badge style={{
-                                position: "absolute",
-                                right: -9,
-                                top: -9
-                            }} size={18}>{home.count}</Badge> */}
-                        </View>
-                        <Text style={{
-                            fontWeight: "800",
-                            fontSize: 12,
-                            paddingRight: 16,
-                            color: "#1B1C1F"
-                        }}>Vendas</Text>
-                    </View>
-                    {/* <Text style={{
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 14,
+                        color: "#1B1C1F"
+                    }}>Custo</Text>
+                    <Text style={{
                         fontWeight: "800",
                         fontSize: 18,
                         color: "#1B1C1F"
-                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(home.total)}</Text> */}
+                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(report.totalCost)}</Text>
                 </View>
-                <TouchableOpacity style={{
-                    backgroundColor: "#1c1b1f",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: 6,
-                    borderRadius: 8
-                }}
-                // onPress={() => setVisibleDate(true)}
-                >
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
                     <Text style={{
-                        color: "#fff",
-                    }}>
-                        Escolher Data
-                    </Text>
-                </TouchableOpacity>
+                        fontWeight: "800",
+                        fontSize: 14,
+                        color: "#1B1C1F"
+                    }}>Revenda</Text>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 18,
+                        color: "#1B1C1F"
+                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(report.totalResale)}</Text>
+                </View>
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 14,
+                        color: "#1B1C1F"
+                    }}>Peças</Text>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 18,
+                        color: "#1B1C1F"
+                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(report.totalPart)}</Text>
+                </View>
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+
+                }}>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 14,
+                        color: "#1B1C1F"
+                    }}>Bruto</Text>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 18,
+                        color: "#1B1C1F"
+                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(report.totalProfit)}</Text>
+                </View>
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 14,
+                        color: "#1B1C1F"
+                    }}>Líquido</Text>
+                    <Text style={{
+                        fontWeight: "800",
+                        fontSize: 18,
+                        color: "#1B1C1F"
+                    }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(report.totalLiquid)}</Text>
+                </View>
+
             </View>
 
         </View>
+        <View style={{
+            marginTop: 100,
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexDirection: "row",
+            paddingHorizontal: 16
+        }}>
+            <View>
+                <Chip onPress={() => {
+                    setDateReport(obj => {
+                        obj.visibleStart = true
+                        return {
+                            ...obj
+                        }
+                    })
+                }} icon={() => <Icon
+                    source="calendar-alert"
+                    color={"#000"}
+                    size={18}
+                />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
+                    fontSize: 10,
+                    fontWeight: "600",
+                    color: "#000"
+                }}>{new Intl.DateTimeFormat('pt-BR', {
+                    dateStyle: 'medium',
+                }).format(dateReport?.start ? dateReport?.start : new Date())}</Text>} />
+            </View>
+            <View>
+
+                <Chip onPress={() => {
+                    setDateReport(obj => {
+                        obj.visibleEnd = true
+                        return {
+                            ...obj
+                        }
+                    })
+                }} icon={() => <Icon
+                    source="calendar-alert"
+                    color={"#000"}
+                    size={18}
+                />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
+                    fontSize: 10,
+                    fontWeight: "600",
+                    color: "#000"
+                }}>{new Intl.DateTimeFormat('pt-BR', {
+                    dateStyle: 'medium',
+                }).format(dateReport?.end ? dateReport?.end : new Date())}</Text>} />
+            </View>
+
+            <IconButton onPress={() => {
+                if (dateReport.start && dateReport.end) {
+                    handleFindReport({ start: dateReport.start, end: dateReport.end })
+                }
+            }} iconColor='#1B1C1F' icon={"magnify"} />
+        </View>
         <ScrollView style={{
-            marginTop: 91,
             flex: 1,
             width: "100%",
             flexDirection: "column"
         }}>
-            {/* <View style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-            }}>
-                <SubTitle text="Relatório" />
-
-            </View> */}
-            <View style={{
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexDirection: "row",
-                paddingHorizontal: 16
-            }}>
-                <View>
-                    <Chip onPress={() => {
-                        setDateReport(obj => {
-                            obj.visibleStart = true
-                            return {
-                                ...obj
-                            }
-                        })
-                    }} icon={() => <Icon
-                        source="calendar-alert"
-                        color={"#000"}
-                        size={18}
-                    />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
-                        fontSize: 10,
-                        fontWeight: "600",
-                        color: "#000"
-                    }}>{new Intl.DateTimeFormat('pt-BR', {
-                        dateStyle: 'medium',
-                    }).format(dateReport?.start ? dateReport?.start : new Date())}</Text>} />
-                </View>
-                <View>
-
-                    <Chip onPress={() => {
-                        setDateReport(obj => {
-                            obj.visibleEnd = true
-                            return {
-                                ...obj
-                            }
-                        })
-                    }} icon={() => <Icon
-                        source="calendar-alert"
-                        color={"#000"}
-                        size={18}
-                    />} style={{ backgroundColor: "rgba(28, 27, 31, 0.439)" }} children={<Text style={{
-                        fontSize: 10,
-                        fontWeight: "600",
-                        color: "#000"
-                    }}>{new Intl.DateTimeFormat('pt-BR', {
-                        dateStyle: 'medium',
-                    }).format(dateReport?.end ? dateReport?.end : new Date())}</Text>} />
-                </View>
-
-                <IconButton onPress={() => {
-                    if (dateReport.start && dateReport.end) {
-                        handleFindReport({ start: dateReport.start, end: dateReport.end })
-                    }
-                }} iconColor='#1B1C1F' icon={"magnify"} />
-            </View>
             {report.chart.map((chart, index) => (
                 <View key={index} style={{
                     backgroundColor: "#ffffff",
-                    // shadowColor: '#171717',
-                    // shadowOffset: { width: -2, height: 4 },
-                    // shadowOpacity: 0.2,
-                    // shadowRadius: 3,
-                    // elevation: 5,
                     borderRadius: 8,
-                    // marginBottom: 16,
                     padding: 8,
-                    // paddingTop: 16,
-                    // marginHorizontal: 16,
                     marginTop: index === 0 ? 16 : 0
                 }}>
                     <View style={{
@@ -238,23 +230,41 @@ export default function Report() {
                                 />
                             }
                         />}
-                        domain={{ y: [chart.domain.min ? (chart.domain.min - 100) : 0, chart.domain.max ? (chart.domain.max + 100) : 100] }}
-                        // domainPadding={{ x: 2, y: [-10000, -10000] }}
+                        domain={{ y: [chart.domain.min ? (chart.domain.min - 100) : 0, chart.domain.max ? (chart.domain.max + 100) : 100], x: [0, chart.chart.length + 1] }}
                         minDomain={{ y: 0, x: 0 }}
                     >
-                        <VictoryLine
-                            key={index}
-                            // domainPadding={{ x: [10, -10], y: 5 }}
-                            style={{
-                                data: { stroke: colors[index] },
-                                parent: { border: "1px solid #ccc" },
-
-                            }}
-                            // labels={(el: any) => {
-                            //   return `${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(el?.datum?.y)}`
-                            // }}
-                            data={chart.chart}
+                        <VictoryAxis
+                            dependentAxis
+                            tickLabelComponent={<VictoryLabel />}
                         />
+                        <VictoryAxis
+                            tickLabelComponent={<VictoryLabel text={({ datum }) => {
+                                const label = chart.chart.find(el => el.x == datum)?.date
+
+                                return label ? label : ''
+                            }} />}
+                        />
+                        {chart.chart.length > 1 ? (
+                            <VictoryLine
+                                style={{
+                                    data: { stroke: colors[index] },
+                                    parent: { border: "1px solid #ccc" },
+
+                                }}
+                                data={chart.chart}
+                            />
+
+                        ) : (
+                            <VictoryBar
+                                // style={{
+                                //     data: { stroke: colors[index] },
+                                //     parent: { border: "1px solid #ccc" },
+
+                                // }}
+                                style={{ data: { fill: colors[index] } }}
+                                data={chart.chart}
+                            />
+                        )}
                     </VictoryChart>
                 </View>
 
@@ -277,7 +287,6 @@ export default function Report() {
                         })
                     }
                 }}
-                // display='calendar'
                 value={dateReport.start ? dateReport.start : new Date()}
                 mode={"date"}
             />
@@ -299,7 +308,6 @@ export default function Report() {
                         })
                     }
                 }}
-                // display='calendar'
                 value={dateReport.end ? dateReport.end : new Date()}
                 mode={"date"}
             />

@@ -23,7 +23,7 @@ const AppBarBottomSys = (props: BottomTabHeaderProps) => {
                     color: "#ffffff",
                     fontSize: 20,
                     fontWeight: "600",
-                }} title={`Olá, ${user.name}`} />
+                }} title={String(props.options?.title)} />
 
                 <IconButton
                     size={16}

@@ -2,6 +2,7 @@ export interface ReportProps {
     totalProfit: number
     totalCost: number
     totalPart: number
+    totalResale: number
     totalLiquid: number
     chart: Chart[]
   }
@@ -17,6 +18,7 @@ export interface ReportProps {
     x: string
     y: number
     qtd: number
+    date: string
   }
   
   export interface Domain {

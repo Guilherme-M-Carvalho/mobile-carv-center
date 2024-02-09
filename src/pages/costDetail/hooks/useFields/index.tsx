@@ -23,7 +23,13 @@ export default function useFields() {
             error: false,
             helperText: "",
             value: ""
-        }
+        },
+        priceResale: {
+            error: false,
+            helperText: "",
+            value: ""
+        },
+        totalResale: 0
     })
 
     const onChangeFields: OnChangeFieldsProps = ({ field, value }) => {
