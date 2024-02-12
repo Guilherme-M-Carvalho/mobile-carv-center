@@ -63,7 +63,7 @@ export default function AppRoutes() {
                     color={color}
                     size={size}
                 />),
-                tabBarLabel: "Custo",
+                tabBarLabel: "Produtos",
             }} name="cost" component={CostRoutes} />
             <Tab.Screen options={{
                 headerShown: true,
@@ -134,7 +134,7 @@ function CostRoutes() {
             header: (props) => <AppBarService  {...props} />,
         }} initialRouteName="costList" >
             <CostStack.Screen options={{
-                title: "Custo",
+                title: "Produtos",
                 headerBackVisible: false,
             }} name="costList" component={Cost} />
             <CostStack.Screen options={{

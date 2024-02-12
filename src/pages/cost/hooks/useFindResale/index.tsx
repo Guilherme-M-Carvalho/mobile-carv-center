@@ -8,7 +8,7 @@ export default function useFindResale() {
 
     const { showLoading, hideLoading } = useContext(GlobalAlertContext)
 
-    const handleFind = async () => {
+    const handleFindResale = async () => {
         showLoading()
         try {
             const { data } = await api.get("/resale")
@@ -38,6 +38,6 @@ export default function useFindResale() {
 
     return {
         dataResale,
-        handleFind
+        handleFindResale
     }
 }

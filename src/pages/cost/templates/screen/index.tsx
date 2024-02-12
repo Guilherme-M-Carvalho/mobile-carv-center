@@ -17,14 +17,7 @@ const Tab = createMaterialTopTabNavigator();
 
 function ListResale() {
     const navigation = useNavigation<NativeStackNavigationProp<CostStackParamsList>>()
-    const { handleFind, dataResale: data } = useFindResale()
-    const isFocused = useIsFocused();
-    const { searchQuery } = useContext(PageContext)
-
-    useEffect(() => {
-        if (isFocused)
-            handleFind()
-    }, [isFocused])
+    const { searchQuery, dataResale: data } = useContext(PageContext)
 
     return (<View style={{
         flex: 1
@@ -78,13 +71,13 @@ function MyTabs() {
             }
         }} initialRouteName='listCost'>
             <Tab.Screen name="listCost" options={{
-                tabBarLabel: "Lista de custos",
+                tabBarLabel: "Lista de Produtos",
                 tabBarLabelStyle: {
                     textTransform: "none"
                 },
             }} component={ListCost} />
             <Tab.Screen options={{
-                tabBarLabel: "Lista de revendas",
+                tabBarLabel: "Lista de Vendas",
                 tabBarLabelStyle: {
                     textTransform: "none"
                 },
@@ -94,7 +87,18 @@ function MyTabs() {
 }
 
 const Screen = () => {
-    const { searchQuery, setSearchQuery } = useContext(PageContext)
+    const { searchQuery, setSearchQuery, handleFind, handleFindResale } = useContext(PageContext) 
+    const isFocused = useIsFocused();
+
+
+    useEffect(() => {
+        if (isFocused){
+            handleFind()
+            handleFindResale()
+        }
+    }, [isFocused])
+
+    
     return (
         <View style={{
             flex: 1,
@@ -159,15 +163,9 @@ const Screen = () => {
 };
 
 function ListCost() {
-    const { handleFind, data } = useFind()
-    const isFocused = useIsFocused();
-    const { searchQuery, setSearchQuery } = useContext(PageContext)
+    const { searchQuery, setSearchQuery, data } = useContext(PageContext)
     const navigation = useNavigation<NativeStackNavigationProp<CostStackParamsList>>()
 
-    useEffect(() => {
-        if (isFocused)
-            handleFind()
-    }, [isFocused])
 
     return (<View style={{
         flex: 1,

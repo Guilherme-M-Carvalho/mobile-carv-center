@@ -7,6 +7,7 @@ import { ModalContext } from "../../contexts/modal";
 import { FieldsContext } from "../../contexts/fields";
 import Product from "../product";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import Actions from "../actions";
 
 type ResaleDetailRProps = {
     editarResale: {
@@ -53,7 +54,6 @@ export default function Screen() {
                 backgroundColor: "#ffffff",
                 position: "absolute",
                 top: 0,
-                zIndex: 100000,
                 flex: 1,
                 shadowColor: '#171717',
                 shadowOffset: { width: -2, height: 4 },
@@ -129,5 +129,6 @@ export default function Screen() {
                 </View>
             </ScrollView>
         </View>
+        <Actions />
     </View>)
 }

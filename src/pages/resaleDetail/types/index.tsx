@@ -14,6 +14,7 @@ export interface CostProps {
   amountStock: number
   select?: boolean
   amountSelect?: number
+  save?:number
 }
 
 export type HandleToggleSelectProps = ({index}: {index: number}) => void

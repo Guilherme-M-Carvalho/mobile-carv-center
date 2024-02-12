@@ -51,7 +51,6 @@ export default function Screen() {
                 backgroundColor: "#ffffff",
                 position: "absolute",
                 top: 0,
-                zIndex: 100000,
                 flex: 1,
                 shadowColor: '#171717',
                 shadowOffset: { width: -2, height: 4 },
@@ -167,7 +166,7 @@ export default function Screen() {
                     />
                 </View>
             </ScrollView>
-            <Actions />
         </View>
+        <Actions />
     </View>)
 }

@@ -2,13 +2,15 @@ import { useContext, useState } from "react"
 import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext"
 import { api } from "../../../../services/api"
 import { CostListProps, HandleToggleSelectProps } from "../../types"
+import useData from "../useData"
 
 export default function useFindProducts() {
 
     const [listCost, setListCost] = useState<{id?: Number; products: CostListProps}>({
         products: []
     })
-    const { showLoading, hideLoading } = useContext(GlobalAlertContext)
+    const { showLoading, hideLoading, showAlert } = useContext(GlobalAlertContext)
+    const { handleData } = useData(listCost)
 
     const handleFind = async () => {
         showLoading()
@@ -56,12 +58,14 @@ export default function useFindProducts() {
                 }
             })
             setListCost(obj => {
+                obj.id = id
                 obj.products = res?.map((el: any) => {
                     const select = dataResale?.products?.find((item: any) => item?.id == el?.id)
                     return {
                         ...el,
                         select: !!select,
-                        amountSelect: select?.amount ? select?.amount : 0
+                        amountSelect: select?.amount ? select?.amount : 0,
+                        save: select?.amount ? select?.amount : 0
                     }
                 })
                 return {
@@ -114,14 +118,17 @@ export default function useFindProducts() {
     const handleAddSelect = ({index}: {index: number}) => {
         setListCost(arr => {
             const maxAmount = arr.products[index].amountStock
+            const save = arr.products[index].save
             let value = Number(arr.products[index].amountSelect)
-            if(value < maxAmount){
+            const valueCompar = Number(arr.products[index].amountSelect) - Number(arr.products[index].save)
+            if(valueCompar < maxAmount ){
                 value++
             }
             arr.products[index].amountSelect = value
             return {...arr}
         })
     }
+
 
     return {
         handleFindFirst,
