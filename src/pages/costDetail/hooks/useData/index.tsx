@@ -13,7 +13,27 @@ export default function useData(fields: FieldsProps){
         }
     }
 
+    const handleDataCreateProduct = () => {
+        return {
+            id: fields?.id,
+            price:  fields.price.value,
+            amount:  fields.amount.value,
+            priceResale: fields.priceResale.value,
+            changeAllProducts: fields.changeAllProducts
+        }
+    }
+
+    const handleDataChangePrice = () => {
+        return {
+            id: fields?.id,
+            priceResale: fields.priceResale.value,
+            changeAllProducts: fields.changeAllProducts
+        }
+    }
+
     return {
-        handleData
+        handleDataChangePrice,
+        handleData,
+        handleDataCreateProduct
     }
 }

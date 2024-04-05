@@ -29,7 +29,8 @@ export default function useFields() {
             helperText: "",
             value: ""
         },
-        totalResale: 0
+        totalResale: 0,
+        costHitory: []
     })
 
     const onChangeFields: OnChangeFieldsProps = ({ field, value }) => {
@@ -43,12 +44,39 @@ export default function useFields() {
     }
 
     const handleSetAllFields: HandleSetAllFieldsProps = (fields) => {
-        setFields({...fields})
+        setFields({ ...fields })
+    }
+
+    const handleToggleCheck = () => {
+        setFields(obj => {
+            obj.changeAllProducts = !obj.changeAllProducts
+            return { ...obj }
+        })
+    }
+   
+    const handleToggleCheckHistory = ({ index }: {index: number}) => {
+        setFields(obj => {
+            obj.costHitory[index].changePrice = !obj.costHitory[index].changePrice
+            return { ...obj }
+        })
+    }
+
+    const handleResetFieldsByCreate = () => {
+        setFields(obj => {
+            obj.priceResale.value = ""
+            obj.amount.value = ""
+            obj.price.value = ""
+            obj.changeAllProducts = true
+            return {...obj}
+        })
     }
 
     return {
+        handleToggleCheckHistory,
+        handleResetFieldsByCreate,
         handleSetAllFields,
         onChangeFields,
+        handleToggleCheck,
         fields
     }
 }

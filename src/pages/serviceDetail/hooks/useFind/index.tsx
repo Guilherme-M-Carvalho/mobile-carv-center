@@ -5,14 +5,18 @@ import { api } from "../../../../services/api"
 import { FieldsProps, ImageProps, PartsProps, ServiceDetailProps } from "../../types"
 import { InputProps } from "../../../../types"
 import useFindTypeService from "../useFindTypeService"
+import useFindProducts from "../useFindProducts"
 
 export default function useFind() {
-    const { handleSetAllFields } = useContext(FieldsContext)
+    const { handleSetAllFields, handleSetAllProducts } = useContext(FieldsContext)
     const { hideLoading, showLoading, showAlert } = useContext(GlobalAlertContext)
     const { handleFindTypeService } = useFindTypeService()
+    const { handleFind: handleFindProducts } = useFindProducts()
 
     const handleFind = async ({ id }: { id: number }) => {
         const typeService = await handleFindTypeService()
+        const products = await handleFindProducts()
+
         showLoading()
         try {
             const { data } = await api.get("/service/" + id)
@@ -94,10 +98,21 @@ export default function useFind() {
                                     ...input,
                                     value: el?.price
                                 },
+                                priceResale: {
+                                    ...input,
+                                    value: el?.priceResale
+                                },
 
                             }
                             return {
                                 ...parts
+                            }
+                        }),
+                        products:sev?.costProduct?.map((el: any) => {
+                            return {
+                                id: el?.id,
+                                amount: el?.amount,
+                                amountSave: el?.amount
                             }
                         })
                     }
@@ -107,8 +122,8 @@ export default function useFind() {
                 })
             }
 
-
             handleSetAllFields(fields)
+            handleSetAllProducts({products})
         } catch (error: any) {
             showAlert({
                 text: error?.response?.data?.error, type: "error"

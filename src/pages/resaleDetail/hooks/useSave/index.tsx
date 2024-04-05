@@ -18,10 +18,6 @@ export default function useSave(){
         try {
             const {data: dateRes} = await api({method: listCost.id ? "put" : "post", data, url: "/resale"})
             if(dateRes?.failed){
-                console.log({
-                    dateRes
-                });
-                
                return 
             }
             showAlert({text: listCost?.id ? messagePut : messagePost, type: "success"})

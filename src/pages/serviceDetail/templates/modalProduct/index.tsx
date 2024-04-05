@@ -5,16 +5,22 @@ import { InputProps } from "../../../../types";
 import { FieldsContext } from "../../contexts/fields";
 import { CostProps } from "../../types";
 import Product from "../product";
+import { ModalContext } from "../../contexts/modal";
 
-export default function ModalProduct({ visible, hideModal }: { visible: boolean; hideModal: () => void; }) {
+export default function ModalProduct({ visible, hideModal, indexDetail }: { visible: boolean; hideModal: () => void; indexDetail: number}) {
 
     const [searchQuery, setSearchQuery] = useState('');
-    const { listCost, handleCleanSelect } = useContext(FieldsContext)
-
-    const productsSelected = listCost.products.filter(el => el.select).reduce((acc, val) => acc + Number(val.amountSelect), 0)
-
-    console.log(listCost.products);
+    const { listCost, handleCleanSelect, fields } = useContext(FieldsContext)
+    // const { modalProductIndex: indexDetail } = useContext(ModalContext)
     
+    let productsSelected = 0
+    const products = fields.serviceDetail[indexDetail]?.products
+    if(products){
+
+        productsSelected =products.reduce((acc, val) => acc + Number(val.amount), 0)
+    }
+
+
 
     return <Modal style={{
         paddingHorizontal: 8,
@@ -113,24 +119,24 @@ export default function ModalProduct({ visible, hideModal }: { visible: boolean;
                         }
                     })
                     return arr.length
-                }).map((service, index) => ((service.amountStock > 0 || service.select) ? <Product
+                }).map((service, index) => (<Product
                     divider={(listCost.products.length - 1) !== index}
                     key={index}
                     index={index}
                     service={service}
-                    modal={true}
-                /> : null))}
+                    indexDetail={indexDetail}
+                />))}
             </List.Section>
         </ScrollView>
-        {productsSelected > 0 ? (<View style={{
+        {Number(productsSelected) > 0 ? (<View style={{
             marginTop: 8,
             paddingHorizontal: 8,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center"
         }}>
-            {productsSelected > 1 ? <Text children={`${productsSelected} Produtos selecionados`} /> : <Text children={`${productsSelected} Produto selecionado`} />}
-            <Button textColor="#171717" onPress={handleCleanSelect} >
+            {Number(productsSelected) > 1 ? <Text children={`${productsSelected} Produtos selecionados`} /> : <Text children={`${productsSelected} Produto selecionado`} />}
+            <Button textColor="#171717" onPress={() => handleCleanSelect({ indexDetail })} >
                 Limpar
             </Button>
         </View>) : null}

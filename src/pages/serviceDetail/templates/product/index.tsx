@@ -4,16 +4,24 @@ import { useContext } from "react";
 import { FieldsContext } from "../../contexts/fields";
 import { Avatar, Divider, Icon, IconButton, List } from "react-native-paper";
 
-export default function Product({ service, divider = true, index, modal = false }: { service: CostProps; divider?: boolean; index: number; modal?: boolean }) {
+export default function Product({ service, divider = true, index, indexDetail }: { indexDetail: number; service: CostProps; divider?: boolean; index: number }) {
 
-    const { handleToggleSelect, handleMinusSelect, handleAddSelect } = useContext(FieldsContext)
+    const { handleToggleSelect, handleMinusSelect, handleAddSelect, fields } = useContext(FieldsContext)
+    const products = fields.serviceDetail[indexDetail]?.products
+    const indexProduct = products?.findIndex(el => el.id == service.id)
+    let amountSelect = 0
+    if (products && Number(indexProduct) > -1) {
+        amountSelect = products[Number(indexProduct)].amount
+    }
 
-    const resaleMoney = service.priceResale * Number(service.amountSelect)
 
-    return ((service.select && !modal) || (modal && service.amountStock > 0)? <>
+
+    const resaleMoney = service.priceResale * Number(amountSelect)
+
+    return (<>
         <View style={{
             backgroundColor: "#fff",
-            ...(service?.select && {
+            ...(Number(amountSelect) > 0 && {
                 shadowColor: '#171717',
                 shadowOffset: { width: -2, height: 4 },
                 shadowOpacity: 0.2,
@@ -27,7 +35,7 @@ export default function Product({ service, divider = true, index, modal = false 
             <View style={{
                 flex: 1,
             }}>
-                {service?.select &&
+                {Number(amountSelect) > 0 &&
                     <>
                         <View style={{
                             flexDirection: "row",
@@ -46,20 +54,20 @@ export default function Product({ service, divider = true, index, modal = false 
                                 </Text>
                                 <IconButton size={14} style={{
                                     margin: 0
-                                }} icon={"minus"} onPress={() => handleMinusSelect({ index })} />
+                                }} icon={"minus"} onPress={() => handleMinusSelect({ index, indexDetail })} />
                                 <Text>
-                                    {service?.amountSelect}
+                                    {amountSelect}
                                 </Text>
                                 <IconButton style={{
                                     margin: 0
-                                }} size={14} icon={"plus"} onPress={() => handleAddSelect({ index })} />
+                                }} size={14} icon={"plus"} onPress={() => handleAddSelect({ index, indexDetail })} />
                             </View>
                             <Text>
                                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(resaleMoney)}
                             </Text>
                             <IconButton size={18} style={{
                                 margin: 0
-                            }} icon={"close"} onPress={() => handleToggleSelect({ index })} />
+                            }} icon={"close"} onPress={() => handleToggleSelect({ index, indexDetail })} />
                         </View>
 
                         <Divider />
@@ -67,7 +75,7 @@ export default function Product({ service, divider = true, index, modal = false 
 
                 }
                 <List.Accordion
-                    onLongPress={() => !service.select && handleToggleSelect({ index })}
+                    onLongPress={() => !service.select && handleToggleSelect({ index, indexDetail })}
                     description={service?.description}
                     titleStyle={{
                         color: "#1B1C1F"
@@ -124,6 +132,18 @@ export default function Product({ service, divider = true, index, modal = false 
                                 fontSize: 14,
                                 color: "#1B1C1F",
                                 fontWeight: "600"
+                            }}>Custo: </Text>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "400"
+                            }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service?.price)}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "600"
                             }}>Custo Unitário: </Text>
                             <Text style={{
                                 fontSize: 14,
@@ -142,6 +162,18 @@ export default function Product({ service, divider = true, index, modal = false 
                                 color: "#1B1C1F",
                                 fontWeight: "400"
                             }}>{service?.amountStock}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "600"
+                            }}>{service?.totalSold > 1 ? `${service?.totalSold} Revendas: ` : `${service?.totalSold} Revenda: `}</Text>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "400"
+                            }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service?.totalResale)}</Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={{
@@ -176,5 +208,5 @@ export default function Product({ service, divider = true, index, modal = false 
         {divider && !service?.select ?
             <Divider />
             : false}
-    </> : null)
+    </>)
 }

@@ -37,8 +37,10 @@ export default function useData(fields: FieldsProps) {
                         deleted: el.deleted,
                         name: el.part.value,
                         price: el.price.value,
+                        priceResale: el.price.value,
                     }
-                })
+                }),
+                costProduct: service.products
             })
         })
 

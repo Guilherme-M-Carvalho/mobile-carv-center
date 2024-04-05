@@ -123,7 +123,7 @@ export default function Screen() {
                     paddingHorizontal: 8,
                     paddingVertical: 8
                 }}>
-                    {listCost.products.filter(el => el.select).map((product, index) => (
+                    {listCost.products.map((product, index) => (
                         <Product index={index} service={product} key={index} divider={(listCost.products.length - 1) !== index} />
                     ))}
                 </View>

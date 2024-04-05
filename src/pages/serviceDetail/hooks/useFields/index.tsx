@@ -1,9 +1,15 @@
-import { useState } from "react"
-import { FieldsProps, HandleDeleteServiceProps, HandleFindByPlateProps, HandleSetAllProps, HandlleAddPartsProps, HandlleDeletePartsProps, OnChangeFieldsProps, OnChangeFieldsServiceDetailProps, OnChangePartsListProps, OnChangeTypeServiceProps, OnDeleteImgProps, OnDeleteServiceImgProps, PickImageServiceProps } from "../../types"
+import { useContext, useState } from "react"
+import { CostListProps, FieldsProps, HandleDeleteServiceProps, HandleFindByPlateProps, HandleSetAllProps, HandleToggleSelectProps, HandlleAddPartsProps, HandlleDeletePartsProps, OnChangeFieldsProps, OnChangeFieldsServiceDetailProps, OnChangePartsListProps, OnChangeTypeServiceProps, OnDeleteImgProps, OnDeleteServiceImgProps, PickImageServiceProps } from "../../types"
 import * as ImagePicker from 'expo-image-picker';
+import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext";
 
 export default function useFields() {
 
+    const { showAlert } = useContext(GlobalAlertContext)
+
+    const [listCost, setListCost] = useState<{ id?: Number; products: CostListProps }>({
+        products: []
+    })
     const [fields, setFields] = useState<FieldsProps>({
         description: {
             error: false,
@@ -51,8 +57,175 @@ export default function useFields() {
             helperText: "",
             value: ""
         },
-       typeService: [] 
+        typeService: []
     })
+
+    const handleSetAllProducts = ({ products }: {
+        products: CostListProps
+    }) => {
+        setListCost(obj => {
+            obj.products = products
+            return { ...obj }
+        })
+    }
+
+
+    const handleToggleSelect: HandleToggleSelectProps = ({ index, indexDetail }) => {
+        let listCostOld = { ...listCost }
+        let update = true
+        setListCost(arr => {
+            const value = arr.products[index].amountSelect !== undefined ? Number(arr.products[index].amountSelect) : 0
+            const serviceDetail = fields.serviceDetail[indexDetail]?.products?.find(el => el.id === arr.products[index].id)
+            if (arr.products[index].amountSelect == arr.products[index].amountStock && !serviceDetail?.amount && (serviceDetail?.amountSave == undefined || serviceDetail.amountSave == serviceDetail.amount)) {
+                update = false
+                return { ...arr }
+            }
+            if(!serviceDetail?.amountSave){
+
+                if (!Number(serviceDetail?.amount)) {
+                    arr.products[index].amountSelect = value + 1
+                } else if (serviceDetail) {
+                    arr.products[index].amountSelect = value - serviceDetail.amount
+                }
+            } else {
+                if (Number(serviceDetail?.amount) < Number(serviceDetail?.amountSave)) {
+                    arr.products[index].amountSelect = value + 1
+                } else if (serviceDetail) {
+                    arr.products[index].amountSelect = value - serviceDetail.amount
+                }
+            }
+            listCostOld = { ...arr }
+            return { ...arr }
+        })
+        setFields(obj => {
+            if (!update) {
+                return { ...obj }
+            }
+            const indexProduct = obj.serviceDetail[indexDetail]?.products?.findIndex(el => el.id == listCostOld.products[index].id)
+            if (!obj.serviceDetail[indexDetail]?.products) {
+                obj.serviceDetail[indexDetail].products = [{
+                    id: listCostOld.products[index].id,
+                    amount: 1
+                }]
+            }
+            else if (indexProduct != undefined) {
+                if (indexProduct < 0) {
+                    const prod = obj.serviceDetail[indexDetail]?.products
+                    if (prod !== undefined) {
+                        prod.push({
+                            amount: 1,
+                            id: listCostOld.products[index].id,
+                        })
+                        obj.serviceDetail[indexDetail].products = prod
+                    }
+                } else {
+                    const prod = obj.serviceDetail[indexDetail]?.products
+                    if (prod !== undefined) {
+                        prod[indexProduct].amount = 0
+                        obj.serviceDetail[indexDetail].products = prod
+                    }
+                }
+            }
+            return { ...obj }
+        })
+        if(!update){
+            showAlert({ type: "warning", text: "Limite de estoque atingido!" })
+        }
+    }
+
+
+    const handleMinusSelect: HandleToggleSelectProps = ({ index, indexDetail }) => {
+        setListCost(arr => {
+            let value = arr.products[index].amountSelect
+            if (value !== undefined) {
+                value--
+            }
+            arr.products[index].amountSelect = value
+            return { ...arr }
+        })
+
+        setFields(obj => {
+            if (Array.isArray(obj.serviceDetail[indexDetail]?.products)) {
+                const prod = obj.serviceDetail[indexDetail]?.products
+                if (prod !== undefined) {
+                    const indexFind = prod.findIndex(el => el.id == listCost.products[index].id)
+                    prod[indexFind].amount--
+                    obj.serviceDetail[indexDetail].products = prod
+                }
+            }
+            return { ...obj }
+        })
+    }
+
+    const handleCleanSelect = ({ indexDetail }: { indexDetail: number }) => {
+        setListCost(arr => {
+            const products = fields.serviceDetail[indexDetail]?.products
+            if (products) {
+                arr.products = arr.products.map(el => {
+                    const amount = products.find(item => item.id == el.id)?.amount
+                    if (amount) {
+                        el.amountSelect = Number(el.amountSelect) - amount
+                    }
+                    return {
+                        ...el,
+                        amountSelect: el.amountSelect
+                    }
+                })
+            }
+            return { ...arr }
+        })
+        setFields(obj => {
+            if (Array.isArray(obj.serviceDetail[indexDetail]?.products)) {
+                const prod = obj.serviceDetail[indexDetail].products
+                if(prod){
+
+                    obj.serviceDetail[indexDetail].products = prod.map(el => {
+                        return {
+                            ...el,
+                            amount: 0
+                        }
+                    })
+                }
+            }
+            return { ...obj }
+        })
+    }
+
+    const handleAddSelect = ({ index, indexDetail }: { index: number; indexDetail: number }) => {
+        let listCostOld = { ...listCost }
+        let updateAmount = false
+        setListCost(arr => {
+            const maxAmount = arr.products[index].amountStock
+            const serviceDetail = fields.serviceDetail[indexDetail]?.products?.find(el => el.id === arr.products[index].id)
+
+            const save = arr.products[index]?.save
+            let value = Number(arr.products[index].amountSelect)
+            const valueCompar = Number(arr.products[index].amountSelect) - Number(save ? save : 0)
+            if (valueCompar < maxAmount) {
+                value++
+                updateAmount = true
+            } else if(Number(serviceDetail?.amount) < Number(serviceDetail?.amountSave)) {
+                value++
+                updateAmount = true
+            }
+            arr.products[index].amountSelect = value
+            listCostOld = { ...arr }
+            return { ...arr }
+        })
+        setFields(obj => {
+            const products = obj.serviceDetail[indexDetail]?.products
+            if (products) {
+                const indexFind = products.findIndex(el => el.id == listCostOld.products[index].id)
+                if (updateAmount && indexFind > -1) {
+                    products[indexFind].amount++
+                    obj.serviceDetail[indexDetail].products = products
+                }
+            }
+            return {
+                ...obj
+            }
+        })
+    }
 
     const onChangeField: OnChangeFieldsProps = ({ field, value }) => {
         setFields(obj => {
@@ -98,7 +271,7 @@ export default function useFields() {
 
     const valueTypeService = (value: number) => {
         const type = fields.typeService.find(el => el.id == value)
-        if (type){
+        if (type) {
             return type?.description
         }
         return "N/A"
@@ -270,6 +443,11 @@ export default function useFields() {
                         error: false,
                         helperText: "",
                         value: price
+                    },
+                    priceResale: {
+                        error: false,
+                        helperText: "",
+                        value: price
                     }
                 })
             } else {
@@ -280,6 +458,11 @@ export default function useFields() {
                         value: partsValue
                     },
                     price: {
+                        error: false,
+                        helperText: "",
+                        value: price
+                    },
+                    priceResale: {
                         error: false,
                         helperText: "",
                         value: price
@@ -311,17 +494,24 @@ export default function useFields() {
     }
 
     let partPrice = 0
+    let productPrice = 0
     const serviceFilter = fields.serviceDetail.filter(el => !el.deleted)
     const serviceDetail = serviceFilter.filter(el => el?.partsList?.length)
+    const serviceDetailProducts = serviceFilter.filter(el => el?.products?.length)
     serviceDetail.forEach(el => {
         if (el.partsList && !el.customerParts) {
             const parts = el?.partsList?.filter(el => !el.deleted)
             partPrice += parts?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0);
         }
     })
+    serviceDetailProducts.forEach(el => {
+        if(el.products){
+            productPrice += el.products?.reduce((accumulator, currentValue) => Number(accumulator) + (Number(listCost.products.find(item => item.id == currentValue.id)?.priceResale) * Number(currentValue.amount)), 0);
+        }
+    })
 
 
-    const total = serviceFilter.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0) + partPrice;
+    const total = serviceFilter.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0) + partPrice + productPrice;
 
     return {
         deletePartsList,
@@ -342,6 +532,12 @@ export default function useFields() {
         toggleDelete,
         handleAddParts,
         fields,
-        total
+        total,
+        handleSetAllProducts,
+        handleAddSelect,
+        handleCleanSelect,
+        handleMinusSelect,
+        handleToggleSelect,
+        listCost
     }
 }

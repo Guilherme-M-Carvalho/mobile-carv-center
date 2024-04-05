@@ -2,22 +2,22 @@ import { useContext } from "react"
 import { GlobalAlertContext } from "../../../../contexts/GlobalAlertContext"
 import { api } from "../../../../services/api"
 import { FieldsContext } from "../../contexts/fields"
-import { FieldsProps } from "../../types"
+import { CostHitory, FieldsProps } from "../../types"
 
-export default function useFind(){
+export default function useFind() {
 
     const { showLoading, hideLoading } = useContext(GlobalAlertContext)
     const { handleSetAllFields } = useContext(FieldsContext)
 
-    const handleFind = async ({id}: {id: number}) => {
+    const handleFind = async ({ id }: { id: number }) => {
         showLoading()
         try {
-            const { data } = await api({method: "get", url: `/cost/${id}`})
+            const { data } = await api({ method: "get", url: `/cost/${id}` })
             const fields: FieldsProps = {
                 amount: {
                     error: false,
                     helperText: "",
-                    value: String(Number(data?.amount) - Number(data?.totalSold))
+                    value: ""
                 },
                 description: {
                     error: false,
@@ -32,22 +32,42 @@ export default function useFind(){
                 price: {
                     error: false,
                     helperText: "",
-                    value: String(data?.price)
+                    value: ''
                 },
                 priceResale: {
                     error: false,
                     helperText: "",
-                    value: String(data?.priceResale)
+                    value: ""
                 },
-                totalResale: data?.totalResale,
-                totalSold: data?.totalSold,
+                changeAllProducts: true,
+                lastPriceResale: Number(data?.priceResale),
+                costHitory: data?.costHitory?.map((item: any) => {
+                    const history: CostHitory = {
+                        id: item?.id,
+                        price: item?.price,
+                        priceResale: item?.priceResale,
+                        amount: item?.amount,
+                        updatePrice: item?.updatePrice,
+                        created_at: item?.created_at,
+                        updated_at: item?.updated_at,
+                        amountSold: item?.amountSold,
+                        totalSold: item?.totalSold,
+                        amountStock: item?.amountStock,
+                        amountDelete: item?.amountDelete,
+                    }
+                    return {
+                        ...history
+                    }
+                }),
+                totalResale: data?.totalSold,
+                totalSold: data?.amountSold,
                 id: id
             }
 
-            handleSetAllFields({...fields})
-            
+            handleSetAllFields({ ...fields })
+
         } catch (error) {
-            
+
         }
         hideLoading()
     }

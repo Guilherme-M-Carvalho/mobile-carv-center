@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AnimatedFAB, Divider, Icon, List, MD3Colors, Searchbar } from 'react-native-paper';
 import { CostStackParamsList, StackParamsList } from '../../../../routes/app.routes';
 import SubTitle from '../../../../components/subTitle';
-import useFind from '../../hooks/useFind';
+import useFind, { Cost, CostProps } from '../../hooks/useFind';
 import { useContext, useEffect, useState } from 'react';
 import { Avatar } from 'react-native-paper';
 import { apiUrl } from '../../../../services/apiUrl';
@@ -49,17 +49,17 @@ function ListResale() {
             </List.Section>
         </ScrollView>
         <AnimatedFAB
-                icon={'plus'}
-                label={'Label'}
-                extended={false}
-                onPress={() => navigation.navigate('createResale')}
-                visible={true}
-                animateFrom={'right'}
-                iconMode={'static'}
-                style={[styles.fabStyle]}
-                rippleColor={"#1d1d2e"}
-                color='#fff'
-            />
+            icon={'plus'}
+            label={'Label'}
+            extended={false}
+            onPress={() => navigation.navigate('createResale')}
+            visible={true}
+            animateFrom={'right'}
+            iconMode={'static'}
+            style={[styles.fabStyle]}
+            rippleColor={"#1d1d2e"}
+            color='#fff'
+        />
     </View>)
 }
 
@@ -87,18 +87,18 @@ function MyTabs() {
 }
 
 const Screen = () => {
-    const { searchQuery, setSearchQuery, handleFind, handleFindResale } = useContext(PageContext) 
+    const { searchQuery, setSearchQuery, handleFind, handleFindResale } = useContext(PageContext)
     const isFocused = useIsFocused();
 
 
     useEffect(() => {
-        if (isFocused){
+        if (isFocused) {
             handleFind()
             handleFindResale()
         }
     }, [isFocused])
 
-    
+
     return (
         <View style={{
             flex: 1,
@@ -198,21 +198,21 @@ function ListCost() {
             </List.Section>
         </ScrollView>
         <AnimatedFAB
-                icon={'plus'}
-                label={'Label'}
-                extended={false}
-                onPress={() => navigation.navigate('createCost')}
-                visible={true}
-                animateFrom={'right'}
-                iconMode={'static'}
-                style={[styles.fabStyle]}
-                rippleColor={"#1d1d2e"}
-                color='#fff'
-            />
+            icon={'plus'}
+            label={'Label'}
+            extended={false}
+            onPress={() => navigation.navigate('createCost')}
+            visible={true}
+            animateFrom={'right'}
+            iconMode={'static'}
+            style={[styles.fabStyle]}
+            rippleColor={"#1d1d2e"}
+            color='#fff'
+        />
     </View>)
 }
 
-function Service({ service }: any) {
+function Service({ service }: { service: Cost }) {
     const navigation = useNavigation<NativeStackNavigationProp<CostStackParamsList>>()
 
     return (<>
@@ -292,20 +292,22 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service?.price)}</Text>
+                        }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(service.price))}</Text>
                     </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <Text style={{
-                            fontSize: 14,
-                            color: "#1B1C1F",
-                            fontWeight: "600"
-                        }}>Custo Unitário: </Text>
-                        <Text style={{
-                            fontSize: 14,
-                            color: "#1B1C1F",
-                            fontWeight: "400"
-                        }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(service?.priceResale)}</Text>
-                    </View>
+                    {service.priceResale.map(({ amount, price }, i) => (
+                        <View style={{ flexDirection: "row" }} key={i}>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "600"
+                            }}>{amount} {amount> 1 ? "Produtos": "Produto"} custando: </Text>
+                            <Text style={{
+                                fontSize: 14,
+                                color: "#1B1C1F",
+                                fontWeight: "400"
+                            }}>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(price))} cada</Text>
+                        </View>
+                    ))}
                     <View style={{ flexDirection: "row" }}>
                         <Text style={{
                             fontSize: 14,
@@ -340,7 +342,7 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{service?.createdAt}</Text>
+                        }}>{service?.created_at}</Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <Text style={{
@@ -352,7 +354,7 @@ function Service({ service }: any) {
                             fontSize: 14,
                             color: "#1B1C1F",
                             fontWeight: "400"
-                        }}>{service?.updatedAt}</Text>
+                        }}>{service?.updated_at}</Text>
                     </View>
 
 

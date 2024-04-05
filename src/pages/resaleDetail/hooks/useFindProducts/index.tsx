@@ -9,13 +9,14 @@ export default function useFindProducts() {
     const [listCost, setListCost] = useState<{id?: Number; products: CostListProps}>({
         products: []
     })
+
     const { showLoading, hideLoading, showAlert } = useContext(GlobalAlertContext)
     const { handleData } = useData(listCost)
 
     const handleFind = async () => {
         showLoading()
         try {
-            const { data } = await api({ method: "get", url: `/cost` })
+            const { data } = await api({ method: "get", url: `/cost/resale` })
             const res = data?.map((el: any) => {
                 return {
                     ...el,
@@ -42,8 +43,9 @@ export default function useFindProducts() {
     const handleFindFirst = async (id: number) => {
         showLoading()
         try {
-            const { data } = await api({ method: "get", url: `/cost` })
+            const { data } = await api({ method: "get", url: `/cost/resale` })
             const { data: dataResale } = await api({ method: "get", url: `/resale/${id}` })
+
             const res = data?.map((el: any) => {
                 return {
                     ...el,
@@ -57,10 +59,12 @@ export default function useFindProducts() {
                     }).format(new Date(el?.updated_at))
                 }
             })
+            
             setListCost(obj => {
                 obj.id = id
                 obj.products = res?.map((el: any) => {
-                    const select = dataResale?.products?.find((item: any) => item?.id == el?.id)
+                    const select = dataResale?.products?.find((item: any) => item?.id == el?.id && Number(item?.priceResale) == Number(el?.priceResale) )
+                    
                     return {
                         ...el,
                         select: !!select,
@@ -68,6 +72,7 @@ export default function useFindProducts() {
                         save: select?.amount ? select?.amount : 0
                     }
                 })
+
                 return {
                     ...obj
                 }
@@ -78,11 +83,17 @@ export default function useFindProducts() {
         hideLoading()
     }
 
+    
+
     const handleToggleSelect: HandleToggleSelectProps = ({ index }) => {
         setListCost(arr => {
             arr.products[index].select = !arr.products[index].select
             if (arr.products[index].select) {
                 arr.products[index].amountSelect = 1
+            } else {
+                arr.products[index].amountSelect = 0
+                arr.products[index].select = false
+
             }
             return {...arr}
         })
@@ -120,7 +131,7 @@ export default function useFindProducts() {
             const maxAmount = arr.products[index].amountStock
             const save = arr.products[index].save
             let value = Number(arr.products[index].amountSelect)
-            const valueCompar = Number(arr.products[index].amountSelect) - Number(arr.products[index].save)
+            const valueCompar = Number(arr.products[index].amountSelect) - Number(save ? save : 0)
             if(valueCompar < maxAmount ){
                 value++
             }

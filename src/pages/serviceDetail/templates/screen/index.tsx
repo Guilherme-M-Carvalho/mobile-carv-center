@@ -12,6 +12,7 @@ import useFind from "../../hooks/useFind";
 import { apiUrl } from "../../../../services/apiUrl";
 import { ModalContext } from "../../contexts/modal";
 import useFindTypeService from "../../hooks/useFindTypeService";
+import useFindProducts from "../../hooks/useFindProducts";
 
 type ServiceDetailRProps = {
     editarService: {
@@ -24,24 +25,31 @@ type ServiceDetailRouteProps = RouteProp<ServiceDetailRProps, 'editarService'>
 export default function Screen() {
 
     const route = useRoute<ServiceDetailRouteProps>()
-    const { onChangeField, fields, pickImage, onDeleteImg, total, handleSetAllFields } = useContext(FieldsContext)
+    const { onChangeField, fields, pickImage, onDeleteImg, total, handleSetAllFields, handleSetAllProducts } = useContext(FieldsContext)
     const { handleFind } = useFindCarByPlate()
     const { handleFind: handleFindService } = useFind()
     const { handleFindTypeService } = useFindTypeService()
+    const { handleFind: handleFindProducts } = useFindProducts()
 
     useEffect(() => {
         if (!!route.params?.id) {
-            handleFindService({
-                id: route.params.id
-            })
+            (async () => {
+
+
+                handleFindService({
+                    id: route.params.id
+                })
+            })()
         } else {
-            (async() => {
+            (async () => {
+                const products = await handleFindProducts()
                 const typeService = await handleFindTypeService()
                 const newFields: FieldsProps = {
                     ...fields,
                     typeService: typeService
                 }
                 handleSetAllFields(newFields)
+                handleSetAllProducts({ products })
             })()
         }
     }, [])
@@ -240,16 +248,17 @@ export default function Screen() {
 }
 
 
-function Service({ description, index, price, images, typeService, parts, obs, customerParts, pressDelete, partsList, date
+function Service({ products, description, index, price, images, typeService, parts, obs, customerParts, pressDelete, partsList, date
 }: ServiceDetailProps & { index: number }) {
 
-    const { fields, onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService, valueTypeService, toggleCustomerParts, toggleDelete } = useContext(FieldsContext)
-    const { showModal, showModalParts } = useContext(ModalContext)
+    const { fields, onChangeFieldServiceDetail, pickImageService, onDeleteServiceImg, handleDeleteService, valueTypeService, toggleCustomerParts, toggleDelete, listCost: { products: productslist } } = useContext(FieldsContext)
+    const { showModal, showModalParts, handleVisibleProduct } = useContext(ModalContext)
     const naSelected = typeService === 0
     const partsListsFilter = partsList?.filter(el => !el.deleted)
     const totalParts = partsListsFilter?.reduce((accumulator, currentValue) => Number(accumulator) + Number(currentValue.price.value), 0)
     const descriptionAccordion = Number(price.value) + Number(parts.value) + (totalParts && !customerParts ? totalParts : 0)
-
+    const productsAmount = products ? products?.reduce((acc, val) => acc + val.amount, 0) : 0
+    const productsPrice = products ? products?.reduce((acc, val) => acc + (Number(productslist.find(el => el.id == val.id)?.priceResale) * val.amount), 0) : 0
 
 
     return (
@@ -442,7 +451,31 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                                 justifyContent: "space-between",
                                 alignItems: "center"
                             }}>
+                                <Text style={{
+                                    fontSize: 14,
+                                    paddingLeft: 4
+                                }}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(productsPrice)}
+                                </Text>
+                                <View>
+                                    <Button buttonColor="rgba(28, 27, 31, 0.439)" mode="contained" textColor="#1c1b1f" onPress={() => handleVisibleProduct({ index })}>
+                                        {products ? `${productsAmount} Produtos` : "Produtos"}
+                                    </Button>
+                                </View>
+                            </View>
+                            <View style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                alignItems: "center"
+                            }}>
                                 <Checkbox.Item
+                                    style={{
+                                        paddingLeft: 4,
+                                    }}
+                                    labelStyle={{
+                                        fontSize: 14,
+                                        marginLeft: 0
+                                    }}
                                     label="Peças do cliente"
                                     status={customerParts ? 'checked' : "unchecked"}
                                     color="#1c1b1f"
@@ -456,6 +489,7 @@ function Service({ description, index, price, images, typeService, parts, obs, c
                                     </View>
                                 }
                             </View>
+
                             <View style={{
                                 flexDirection: "row",
                                 justifyContent: "space-between",

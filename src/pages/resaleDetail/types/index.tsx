@@ -1,15 +1,13 @@
 export type CostListProps = CostProps[]
 
 export interface CostProps {
+  cost_history_id: number
   id: number
   name: string
   description: string
   created_at: string
   updated_at: string
-  totalResale: number
-  totalSold: number
   amount: number
-  price: number
   priceResale: number
   amountStock: number
   select?: boolean
